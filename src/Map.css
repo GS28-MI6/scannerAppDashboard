@@ -1,0 +1,31 @@
+.blue-circle {
+  display: flex;
+  justify-content: center;
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border: 1px solid #088;
+  border-radius: 15px;
+  background-color: #0ff;
+  z-index: 9999; /* Watch out for this!!! */
+  display: none;
+  overflow: visible;
+}
+
+.pointer{
+  display: none;
+}
+
+.blue-circle .individualCard {
+  overflow: visible;
+  position: relative;
+  background: #fff;
+  width: 250px !important;
+  height: 50px !important;
+  top: -55px;
+  left: -125px;
+}
+
+.ol-selectable .pointer{
+  display:block !important;
+}

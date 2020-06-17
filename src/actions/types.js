@@ -1,0 +1,10 @@
+export const FETCH_POSTS = 'FETCH_POSTS';
+export const NEW_POST = 'NEW_POST';
+export const SELECT_ALERT = 'SELECT_ALERT';
+export const NEW_DIR = 'NEW_DIR';
+export const LOGIN_USER = 'LOGIN_USER';
+export const COUNT_ALERTS = 'COUNT_ALERTS';
+export const LIST_USERS = 'LIST_USERS';
+export const PENDING_USERS = 'PENDING_USERS';
+export const MAP_SHOW = 'MAP_SHOW';
+export const LOGIN_ERR = 'LOGIN_ERR';
