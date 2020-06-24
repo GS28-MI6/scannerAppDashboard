@@ -159,7 +159,22 @@ export const countAlertsFiltered = (desde, hasta) => dispatch => {
 
 export const getUsers = () => dispatch => {
   axios
-    .get("http://18.230.143.84:4000/user_list")
+    .post("http://52.67.84.234:4000/items")
+    .then(res => {
+      var users = res.data;
+      dispatch({
+        type: LIST_USERS,
+        payload: users
+      });
+    })
+    .catch(error => {
+      console.log(error);
+    });
+};
+
+export const getProductsFiltered = (nombre, tipo) => dispatch => {
+  axios
+    .post("http://52.67.84.234:4000/items_filtered", {tipo, nombre})
     .then(res => {
       var users = res.data;
       dispatch({

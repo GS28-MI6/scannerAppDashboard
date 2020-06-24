@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import UserItem from "./UserItem";
 import { connect } from "react-redux";
-import { activateUser, getUsers, getProductsFiltered } from "./actions/postActions";
+import { activateUser, getUsers } from "./actions/postActions";
 import io from "socket.io-client";
 import CreatableSelect from "react-select";
 import axios from "axios";
@@ -9,12 +9,13 @@ import "./css/users.css";
 import "./css/stadistics.css";
 
 const options = [
-  { value: "Comestibles", label: "Comestibles"},
-  { value: "Galletitas", label: "Galletitas"},
-  { value: "Infusiones", label: "Infusiones"},
-  { value: "Limpieza", label: "Limpieza"},
-  { value: "Bebidas con alcohol", label: "Bebidas con alcohol"},
-  { value: "Bebidas sin alcohol", label: "Bebidas sin alcohol"}
+  { value: "Accidente Vial", label: "Accidente Vial"},
+  { value: "Bomberos", label: "Bomberos"},
+  { value: "Disturbios", label: "Distubios"},
+  { value: "General", label: "General"},
+  { value: "Robo", label: "Robo"},
+  { value: "Salud", label: "Salud"},
+  { value: "Violencia de Género", label: "Violencia de Género"}
 ];
 
 var dataPoints =[];
@@ -36,8 +37,7 @@ class UserList extends Component {
     };
     this.state ={
       selectedOption: {
-        value: "",
-        label: "General"
+        value: "General"
       }
     }
     this.submitForm = this.submitForm.bind(this);
@@ -73,15 +73,39 @@ class UserList extends Component {
     console.log(e);
     console.log(this.state.selectedOption);
     this.setState({selectedOption : {
-      value: e.value,
-      label: e.label
+      value: e.value
     }})
   }
 
   submitForm() {
-    var nombre = document.getElementById("dateFrom").value
+    var desde = document.getElementById("dateFrom").value
+    var hasta = document.getElementById("dateTo").value
     var tipo = this.state.selectedOption.value
-    this.props.getProductsFiltered(nombre, tipo)
+
+    if(tipo === "General"){
+      this.props.countAlertsFiltered(desde, hasta)
+      this.setState({currentGraph : tipo})
+    } else{
+      var chart = this.chart;
+      this.setState({currentGraph : tipo})
+      axios.post('http://18.230.143.84:4000/countFiltered', {tipo, desde, hasta})
+      .then(function(data) {
+        var datos = data.data
+        for (var i = 0; i < datos.length; i++) {
+          var fecha = datos[i].dia.split('T')[0]
+          var año = fecha.split('-')[0]
+          var mes = fecha.split('-')[1]
+          var dia = fecha.split('-')[2]
+          console.log(fecha, año, mes, dia)
+          dataPoints.push({
+            x: new Date(año, mes, dia),
+            y: datos[i].tipo
+          });
+        }
+        chart.render();
+        console.log(dataPoints)
+      });
+    }
   }
 
   render() {
@@ -101,7 +125,11 @@ class UserList extends Component {
                 <div className="dates">
                   <div className="date">
                     <h2>Desde:</h2>
-                    <input type="text" className=" css-yk16xz-control" id="dateFrom"></input>
+                    <input type="date" className=" css-yk16xz-control" id="dateFrom"></input>
+                  </div>
+                  <div className="date">
+                    <h2>Hasta:</h2>
+                    <input type="date" className=" css-yk16xz-control" id="dateTo"></input>
                   </div>
                 </div>
               </div>
@@ -109,7 +137,7 @@ class UserList extends Component {
                 <h2 className="dateTitle">Seleccione una categoria</h2>
                 <CreatableSelect
                 value={this.state.selectedOption.value}
-                placeholder= {this.state.selectedOption.label}
+                placeholder= {this.state.selectedOption.value}
                 onChange={e => this.handleChange(e)}
                 options={options}
                 />
@@ -142,4 +170,4 @@ const mapStateToProps = state => ({
   users: state.posts.users
 });
 
-export default connect(mapStateToProps, { activateUser, getUsers, getProductsFiltered })(UserList);
+export default connect(mapStateToProps, { activateUser, getUsers })(UserList);

@@ -81,7 +81,7 @@ class Stadistics extends Component {
     if(tipo === "General"){
       this.props.countAlertsFiltered(desde, hasta)
       this.setState({currentGraph : tipo})
-    } else{
+    }else{
       var chart = this.chart;
       this.setState({currentGraph : tipo})
       axios.post('http://18.230.143.84:4000/countFiltered', {tipo, desde, hasta})

@@ -63,22 +63,19 @@ export default class UserItem extends Component {
   }
   render() {
     const {
-      email,
-      nombre_completo,
-      dni,
-      telefono,
-      fecha_nacimiento,
-      perimetral,
-      habilitado
+      barcode,
+      nombre,
+      precio,
+      stock,
+      categoria
     } = this.props.user;
-    var date = new Date();
-    date = fecha_nacimiento;
     return (
       <tr className="table-row">
-        <th className="G">{nombre_completo}</th>
-        <th className="N">{dni}</th>
-        <th className="N">{telefono}</th>
-        <th className="N">{dateFormat(date, "isoDate")}</th>
+        <th className="N">{barcode}</th>
+        <th className="XG">{nombre}</th>
+        <th className="S">${precio}</th>
+        <th className="S">{stock}</th>
+        <th className="N">{categoria}</th>
       </tr>
     );
   }
