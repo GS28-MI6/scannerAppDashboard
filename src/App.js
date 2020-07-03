@@ -10,6 +10,7 @@ import Login from "./login";
 import Protected from "./Protected";
 import Stadistics from "./Stadistics";
 import UserList from "./UserList";
+import WebApp from "./WebApp";
 // eslint-disable-next-line no-unused-vars
 import "./App.css";
 import { Provider } from "react-redux";
@@ -154,9 +155,10 @@ class App extends Component {
                   position: "absolute"
                 }}
               />
-              <PrivateRoute exact path="/" component={Protected} />
+              <PrivateRoute exact path="/" component={WebApp} />
+              <PrivateRoute exact path="/ingreso" component={UserList} />
               <PrivateRoute exact path="/stadistics" component={Stadistics} />
-              <PrivateRoute exact path="/users" component={UserList} />
+              <PrivateRoute exact path="/lists/productos" component={UserList} />
               <PrivateRouteManual exact path="/ingreso_manual" component={SelectBoxAlertas} />
               <Route path="/login" render={props => <Login />} />
               <Route path="/login_ingreso_manual" render={props => <Login />} />

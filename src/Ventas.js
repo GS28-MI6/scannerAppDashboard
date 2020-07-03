@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import UserItem from "./UserItem";
 import { connect } from "react-redux";
-import { activateUser, getUsers } from "./actions/postActions";
+import { activateUser, getUsers, getProductsFiltered } from "./actions/postActions";
 import io from "socket.io-client";
 import CreatableSelect from "react-select";
 import axios from "axios";
@@ -9,13 +9,12 @@ import "./css/users.css";
 import "./css/stadistics.css";
 
 const options = [
-  { value: "Accidente Vial", label: "Accidente Vial"},
-  { value: "Bomberos", label: "Bomberos"},
-  { value: "Disturbios", label: "Distubios"},
-  { value: "General", label: "General"},
-  { value: "Robo", label: "Robo"},
-  { value: "Salud", label: "Salud"},
-  { value: "Violencia de Género", label: "Violencia de Género"}
+  { value: "Comestibles", label: "Comestibles"},
+  { value: "Galletitas", label: "Galletitas"},
+  { value: "Infusiones", label: "Infusiones"},
+  { value: "Limpieza", label: "Limpieza"},
+  { value: "Bebidas con alcohol", label: "Bebidas con alcohol"},
+  { value: "Bebidas sin alcohol", label: "Bebidas sin alcohol"}
 ];
 
 var dataPoints =[];
@@ -25,7 +24,7 @@ const socket = io("http://18.230.143.84:4000", {
   transports: ["websocket", "polling"]
 });
 
-class UserList extends Component {
+class Ventas extends Component {
   constructor(props) {
     super(props);
     // this.eventUser = new EventSource("http://18.230.143.84:4000/events_users");
@@ -37,7 +36,8 @@ class UserList extends Component {
     };
     this.state ={
       selectedOption: {
-        value: "General"
+        value: "",
+        label: "General"
       }
     }
     this.submitForm = this.submitForm.bind(this);
@@ -73,93 +73,48 @@ class UserList extends Component {
     console.log(e);
     console.log(this.state.selectedOption);
     this.setState({selectedOption : {
-      value: e.value
+      value: e.value,
+      label: e.label
     }})
   }
 
   submitForm() {
-    var desde = document.getElementById("dateFrom").value
-    var hasta = document.getElementById("dateTo").value
+    var nombre = document.getElementById("dateFrom").value
     var tipo = this.state.selectedOption.value
-
-    if(tipo === "General"){
-      this.props.countAlertsFiltered(desde, hasta)
-      this.setState({currentGraph : tipo})
-    } else{
-      var chart = this.chart;
-      this.setState({currentGraph : tipo})
-      axios.post('http://18.230.143.84:4000/countFiltered', {tipo, desde, hasta})
-      .then(function(data) {
-        var datos = data.data
-        for (var i = 0; i < datos.length; i++) {
-          var fecha = datos[i].dia.split('T')[0]
-          var año = fecha.split('-')[0]
-          var mes = fecha.split('-')[1]
-          var dia = fecha.split('-')[2]
-          console.log(fecha, año, mes, dia)
-          dataPoints.push({
-            x: new Date(año, mes, dia),
-            y: datos[i].tipo
-          });
-        }
-        chart.render();
-        console.log(dataPoints)
-      });
-    }
+    this.props.getProductsFiltered(nombre, tipo)
   }
 
   render() {
     return (
-      <div
-        className="usersContainer"
-        style={{ height: this.stateHeight.heightHolder }}
-      >
-        <div className="titulo">
-          <div> Lista de usuarios </div>
-        </div>
-        <div className="tabla">
-          <div className="filterContainer">
-            <h2>Filtrado de ventas</h2>
-            <div className="formContainer">
-              <div className="dateFilter">
-                <div className="dates">
-                  <div className="date">
-                    <h2>Desde:</h2>
-                    <input type="date" className=" css-yk16xz-control" id="dateFrom"></input>
-                  </div>
-                  <div className="date">
-                    <h2>Hasta:</h2>
-                    <input type="date" className=" css-yk16xz-control" id="dateTo"></input>
-                  </div>
+      <div className="tabla">
+        <div className="filterContainer">
+          <div className="formContainer">
+            <div className="dateFilter">
+              <div className="dates">
+                <div className="date">
+                  <h2>Codigo de barras:</h2>
+                  <input type="text" className=" css-yk16xz-control" id="dateFrom"></input>
                 </div>
               </div>
-              <div className="dateFilter">
-                <h2 className="dateTitle">Seleccione una categoria</h2>
-                <CreatableSelect
-                value={this.state.selectedOption.value}
-                placeholder= {this.state.selectedOption.value}
-                onChange={e => this.handleChange(e)}
-                options={options}
-                />
-              </div>
             </div>
-            <button type="button" onClick={() => this.submitForm()} className="submitDireccion"> Filtrar </button>
           </div>
-          <div className="heighter">
-            <table className="table-container">
-              <tr className="table-row initial">
-                <th className="N">Barcode</th>
-                <th className="XG">Nombre</th>
-                <th className="S">Precio</th>
-                <th className="S">Stock</th>
-                <th className="N">Categoria</th>
-              </tr>
-
+          <button type="button" onClick={() => this.submitForm()} className="submitDireccion"> Añadir </button>
+        </div>
+        <div className="heighter">
+          <table className="table-container">
+            <tr className="table-row initial">
+              <th className="N">Barcode</th>
+              <th className="XG">Nombre</th>
+              <th className="S">Precio</th>
+              <th className="S">Stock</th>
+              <th className="N">Categoria</th>
+            </tr>
+            <div className="scroller">
               {this.props.users.map(function(user, idx) {
                 return <UserItem key={idx} user={user} />;
               }, this)}
-            </table>
-          </div>
+            </div>
+          </table>
         </div>
       </div>
     );
@@ -170,4 +125,4 @@ const mapStateToProps = state => ({
   users: state.posts.users
 });
 
-export default connect(mapStateToProps, { activateUser, getUsers })(UserList);
+export default connect(mapStateToProps, { activateUser, getUsers, getProductsFiltered })(Ventas);

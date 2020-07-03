@@ -5,7 +5,6 @@ import { activateUser, getUsers, getProductsFiltered } from "./actions/postActio
 import io from "socket.io-client";
 import CreatableSelect from "react-select";
 import axios from "axios";
-import Productos from "./Productos.js";
 import "./css/users.css";
 import "./css/stadistics.css";
 
@@ -25,7 +24,7 @@ const socket = io("http://18.230.143.84:4000", {
   transports: ["websocket", "polling"]
 });
 
-class UserList extends Component {
+class Productos extends Component {
   constructor(props) {
     super(props);
     // this.eventUser = new EventSource("http://18.230.143.84:4000/events_users");
@@ -87,15 +86,46 @@ class UserList extends Component {
 
   render() {
     return (
-      <div
-        className="usersContainer"
-        style={{ height: this.stateHeight.heightHolder }}
-      >
-        <div className="titulo">
-          <div> Productos </div>
-          <div> Ventas </div>
+      <div className="tabla">
+        <div className="filterContainer">
+          <h2>Filtrado de Productos</h2>
+          <div className="formContainer">
+            <div className="dateFilter">
+              <div className="dates">
+                <div className="date">
+                  <h2>Nombre:</h2>
+                  <input type="text" className=" css-yk16xz-control" id="dateFrom"></input>
+                </div>
+              </div>
+            </div>
+            <div className="dateFilter">
+              <h2 className="dateTitle">Seleccione una categoria</h2>
+              <CreatableSelect
+              value={this.state.selectedOption.value}
+              placeholder= {this.state.selectedOption.label}
+              onChange={e => this.handleChange(e)}
+              options={options}
+              />
+            </div>
+          </div>
+          <button type="button" onClick={() => this.submitForm()} className="submitDireccion"> Filtrar </button>
         </div>
-        <Productos/>
+        <div className="heighter">
+          <table className="table-container">
+            <tr className="table-row initial">
+              <th className="N">Barcode</th>
+              <th className="XG">Nombre</th>
+              <th className="S">Precio</th>
+              <th className="S">Stock</th>
+              <th className="N">Categoria</th>
+            </tr>
+            <div className="scroller">
+              {this.props.users.map(function(user, idx) {
+                return <UserItem key={idx} user={user} />;
+              }, this)}
+            </div>
+          </table>
+        </div>
       </div>
     );
   }
@@ -105,4 +135,4 @@ const mapStateToProps = state => ({
   users: state.posts.users
 });
 
-export default connect(mapStateToProps, { activateUser, getUsers, getProductsFiltered })(UserList);
+export default connect(mapStateToProps, { activateUser, getUsers, getProductsFiltered })(Productos);

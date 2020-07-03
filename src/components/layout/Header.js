@@ -87,7 +87,7 @@ class Header extends Component {
             <div
               className="button notiBtn"
               onClick={() => {
-                window.open('/users', '_blank');
+                window.open('/lists/productos', '_blank');
               }}
             >
               <div className="notification">
@@ -101,7 +101,6 @@ class Header extends Component {
                 />{" "}
                 Usuarios
               </div>{" "}
-              <div className="number">{counted_users}</div>
             </div>
           </div>
           <div className="info">
