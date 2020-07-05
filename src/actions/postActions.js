@@ -20,7 +20,7 @@ export const userLoginPost = userInfo => dispatch => {
   var usuario = userInfo.email
   var contraseña = userInfo.password
   axios
-    .post("http://52.67.84.234:4000/client_auth", {usuario, contraseña})
+    .post("http://177.71.157.129:4000/client_auth", {usuario, contraseña})
     .then(res => {
       console.log("client auth");
       localStorage.setItem("token", res.data);
@@ -47,7 +47,7 @@ export function validateUser() {
     console.log("vali user");
     if (token) {
       axios
-        .post(`http://52.67.84.234:4000/tokenAuth`, { token: token })
+        .post(`http://177.71.157.129:4000/tokenAuth`, { token: token })
         .then(res => {
           console.log("client auth");
           var decode = jwtDecode(token);
@@ -156,7 +156,7 @@ export const getUsers = () => dispatch => {
   var id_cliente = decode.id_cliente
   console.log(decode, decode.id_cliente)
   axios
-    .post("http://52.67.84.234:4000/items", {id_cliente})
+    .post("http://177.71.157.129:4000/items", {id_cliente})
     .then(res => {
       var users = res.data;
       dispatch({
@@ -196,7 +196,7 @@ export const postVenta = (items, totalObj, id_cliente) => dispatch =>{
 
   var total = {total:totalObj}
   axios
-    .post("http://52.67.84.234:4000/venta", {items, total, id_cliente})
+    .post("http://177.71.157.129:4000/venta", {items, total, id_cliente})
     .then(() => {
       console.log("im in then")
       items = []
@@ -243,7 +243,7 @@ export const cantidadChange = (items, barcode, cantidad) => dispatch =>{
 
 export const getProductsFiltered = (nombre, tipo, id_cliente) => dispatch => {
   axios
-    .post("http://52.67.84.234:4000/items_filtered", {tipo, nombre, id_cliente})
+    .post("http://177.71.157.129:4000/items_filtered", {tipo, nombre, id_cliente})
     .then(res => {
       var users = res.data;
       dispatch({

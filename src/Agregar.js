@@ -71,7 +71,7 @@ class Ventas extends Component {
     barcodeInput.value = barcode
     var id_cliente = this.props.currentUser.id_cliente
     axios
-      .post("http://52.67.84.234:4000/item", {barcode, id_cliente})
+      .post("http://177.71.157.129:4000/item", {barcode, id_cliente})
       .then(response => {
           console.log(response)
 
@@ -114,7 +114,7 @@ class Ventas extends Component {
     var stockInput = document.getElementById("stockInput")
 
     axios
-      .post("http://52.67.84.234:4000/ingreso", {
+      .post("http://177.71.157.129:4000/ingreso", {
           barcode: barcodeInput.value,
           nombre: productoInput.value,
           precio: precioInput.value,

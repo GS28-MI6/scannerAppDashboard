@@ -59,7 +59,7 @@ class Stadistics extends Component {
   componentDidMount() {
     window.addEventListener("resize", this.updateWindowDimensions);
     var chart = this.chart;
-    axios.post('http://52.67.84.234:4000/countFiltered')
+    axios.post('http://177.71.157.129:4000/countFiltered')
     .then(function(data) {
       console.log(data.data)
       var datos = data.data

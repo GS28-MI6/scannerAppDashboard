@@ -43,7 +43,7 @@ class Ventas extends Component {
     const barcode = data
     var id_cliente = this.props.currentUser.id_cliente
     axios
-      .post("http://52.67.84.234:4000/item", {barcode, id_cliente})
+      .post("http://177.71.157.129:4000/item", {barcode, id_cliente})
       .then(response => {
           console.log(response)
           var { nombre, precio, stock } = response.data[0]
@@ -64,7 +64,7 @@ class Ventas extends Component {
     const barcode = data
     var id_cliente = this.props.currentUser.id_cliente
     axios
-      .post("http://52.67.84.234:4000/item", {barcode, id_cliente})
+      .post("http://177.71.157.129:4000/item", {barcode, id_cliente})
       .then(response => {
           console.log(response)
           var { nombre, precio, stock } = response.data[0]
