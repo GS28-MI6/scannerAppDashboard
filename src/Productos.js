@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import UserItem from "./UserItem";
 import { connect } from "react-redux";
 import { activateUser, getUsers, getProductsFiltered } from "./actions/postActions";
-import io from "socket.io-client";
 import CreatableSelect from "react-select";
-import axios from "axios";
 import "./css/users.css";
 import "./css/stadistics.css";
 
@@ -17,23 +15,16 @@ const options = [
   { value: "Bebidas sin alcohol", label: "Bebidas sin alcohol"}
 ];
 
-var dataPoints =[];
-
-
-const socket = io("http://18.230.143.84:4000", {
-  transports: ["websocket", "polling"]
-});
-
 class Productos extends Component {
   constructor(props) {
     super(props);
     // this.eventUser = new EventSource("http://18.230.143.84:4000/events_users");
-    this.props.getUsers();
     var heightHolder = window.innerHeight - 50;
     this.stateHeight = {
       height: window.innerHeight,
       heightHolder: heightHolder
     };
+    this.props.getUsers();
     this.state ={
       selectedOption: {
         value: "",
@@ -46,16 +37,6 @@ class Productos extends Component {
   }
   componentDidMount() {
     window.addEventListener("resize", this.updateWindowDimensions);
-    // this.eventUser.onmessage = event => {
-    //   console.log(event)
-    //   this.props.getUsers()
-    // };
-    socket.on("usuario_registrado", datosAlerta => {
-      console.log("usuario fking registrado!!!!!!");
-      console.log(datosAlerta);
-      this.props.getUsers();
-      window.location.href = "/users";
-    });
   }
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateWindowDimensions);
@@ -81,7 +62,7 @@ class Productos extends Component {
   submitForm() {
     var nombre = document.getElementById("dateFrom").value
     var tipo = this.state.selectedOption.value
-    this.props.getProductsFiltered(nombre, tipo)
+    this.props.getProductsFiltered(nombre, tipo, this.props.currentUser.id_cliente)
   }
 
   render() {
@@ -94,7 +75,7 @@ class Productos extends Component {
               <div className="dates">
                 <div className="date">
                   <h2>Nombre:</h2>
-                  <input type="text" className=" css-yk16xz-control" id="dateFrom"></input>
+                  <input type="text" className=" css-yk16xz-control productos" id="dateFrom"></input>
                 </div>
               </div>
             </div>
@@ -132,7 +113,8 @@ class Productos extends Component {
 }
 
 const mapStateToProps = state => ({
-  users: state.posts.users
+  users: state.posts.users,
+  currentUser: state.posts.currentUser.decode,
 });
 
 export default connect(mapStateToProps, { activateUser, getUsers, getProductsFiltered })(Productos);

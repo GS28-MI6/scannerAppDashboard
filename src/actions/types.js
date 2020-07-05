@@ -8,3 +8,5 @@ export const LIST_USERS = 'LIST_USERS';
 export const PENDING_USERS = 'PENDING_USERS';
 export const MAP_SHOW = 'MAP_SHOW';
 export const LOGIN_ERR = 'LOGIN_ERR';
+export const FETCH_CART = 'FETCH_CART';
+export const FETCH_TOTAL = 'FETCH_TOTAL';

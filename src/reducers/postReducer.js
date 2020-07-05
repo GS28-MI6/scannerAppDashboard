@@ -1,4 +1,5 @@
-import { FETCH_POSTS, NEW_POST, NEW_DIR, SELECT_ALERT, LOGIN_USER, COUNT_ALERTS, LIST_USERS, PENDING_USERS, MAP_SHOW, LOGIN_ERR } from '../actions/types';
+import { FETCH_POSTS, NEW_POST, NEW_DIR, SELECT_ALERT, LOGIN_USER, COUNT_ALERTS, LIST_USERS, PENDING_USERS, MAP_SHOW, LOGIN_ERR, FETCH_CART, FETCH_TOTAL} from '../actions/types';
+import { carrito } from '../actions/postActions';
 
 const initialState = {
   alerts: [],
@@ -8,7 +9,9 @@ const initialState = {
   counts: {},
   users: [],
   pendingUsers: [],
-  loginErr: {}
+  loginErr: {},
+  carrito: [],
+  total: 0.00
 };
 
 export default function(state = initialState, action) {
@@ -48,6 +51,16 @@ export default function(state = initialState, action) {
         return{
           ...state,
           users: action.payload
+        };
+      case FETCH_CART:
+        return{
+          ...state,
+          carrito: action.payload,
+        };
+      case FETCH_TOTAL:
+        return{
+          ...state,
+          total: action.payload,
         };
       case PENDING_USERS:
         return{

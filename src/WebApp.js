@@ -1,32 +1,32 @@
-import React, { Component } from "react";
+import React, { Component, useState } from "react";
 import UserItem from "./UserItem";
 import { connect } from "react-redux";
-import { activateUser, getUsers, getProductsFiltered } from "./actions/postActions";
+import { activateUser, getUsers, getProductsFiltered, getCarrito, postVenta} from "./actions/postActions";
 import io from "socket.io-client";
 import CreatableSelect from "react-select";
 import axios from "axios";
 import Ventas from "./Ventas.js";
+import Agregar from "./Agregar.js";
 import "./css/users.css";
 import "./css/stadistics.css";
-import BarcodeReader from 'react-barcode-reader';
 
 
 class UserList extends Component {
+
+
   constructor(props) {
     super(props);
-    this.props.getUsers();
     var heightHolder = window.innerHeight - 50;
     this.stateHeight = {
       height: window.innerHeight,
       heightHolder: heightHolder
     };
-    this.state = {
-      result: 'No result'
-    }
+    this.updateTotal = this.updateTotal.bind(this);
     this.submitForm = this.submitForm.bind(this);
-    this.handleScan = this.handleScan.bind(this)
+
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
   }
+  
   componentDidMount() {
     window.addEventListener("resize", this.updateWindowDimensions);
   }
@@ -41,20 +41,20 @@ class UserList extends Component {
       heightHolder: heightHolder
     };
   }
-
-  handleScan(data){
-    this.setState({
-      result: data,
+  updateTotal(){
+    var sumaTotal = 0
+    this.props.carrito.map(function(item){
+      console.log(item.cantidad)
+      var precio = parseFloat(item.precio) * parseInt(item.cantidad)
+      console.log(precio)
+      sumaTotal = parseFloat(sumaTotal) + parseFloat(precio)
+      sumaTotal = parseFloat(sumaTotal).toFixed(2)
+      console.log(sumaTotal, "soy sumaTotal")
     })
-  }
-  handleError(err){
-    console.error(err)
   }
 
   submitForm() {
-    var nombre = document.getElementById("dateFrom").value
-    var tipo = this.state.selectedOption.value
-    this.props.getProductsFiltered(nombre, tipo)
+    this.props.postVenta(this.props.carrito, this.props.total)
   }
 
   render() {
@@ -64,21 +64,18 @@ class UserList extends Component {
         style={{ height: this.stateHeight.heightHolder }}
       >
         <div className="titulo">
-          <div> Productos </div>
-          <div> Ventas </div>
+          <div className="subnavItem" onClick={() => window.location.href="/"}> Ventas </div>
+          <div className="subnavItem" onClick={() => window.location.href="/ingreso"}> Ingresos </div>
         </div>
-        <BarcodeReader
-          onError={this.handleError}
-          onScan={this.handleScan}
-          />
-        <Ventas/>
+        {window.location.pathname === "/" ? <Ventas/> : <Agregar />}
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({
-  users: state.posts.users
+  carrito: state.posts.carrito,
+  total: state.posts.total
 });
 
-export default connect(mapStateToProps, { activateUser, getUsers, getProductsFiltered })(UserList);
+export default connect(mapStateToProps, { activateUser, getUsers, getProductsFiltered, getCarrito, postVenta})(UserList);

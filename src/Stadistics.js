@@ -58,7 +58,23 @@ class Stadistics extends Component {
   }
   componentDidMount() {
     window.addEventListener("resize", this.updateWindowDimensions);
-    this.props.countAlerts();
+    var chart = this.chart;
+    axios.post('http://52.67.84.234:4000/countFiltered')
+    .then(function(data) {
+      console.log(data.data)
+      var datos = data.data
+      for (var i = 0; i < datos.length; i++) {
+        var fecha = datos[i].fecha_venta.split('T')[0]
+        var año = fecha.split('-')[0]
+        var mes = fecha.split('-')[1]
+        var dia = fecha.split('-')[2]
+        console.log(fecha, año, mes, dia)
+        dataPoints.push({
+          x: new Date(año, mes, dia),
+          y: datos[i].total_venta
+        });
+      }
+    });
   }
 
   componentWillUnmount() {
@@ -187,13 +203,12 @@ class Stadistics extends Component {
     }
 
     const graphGeneral = cx({
-      'graph-container' : this.state.currentGraph === "General",
-      'hide' : this.state.currentGraph !== "General"
+      'graph-container' : this.state.currentGraph !== "General",
+      'hide' : this.state.currentGraph === "General"
     })
 
     const graphLinear = cx({
-      'linear-Graph' : this.state.currentGraph !== "General",
-      'hide' : this.state.currentGraph === "General"
+      'linear-Graph' : this.state.currentGraph === "General",
     })
 
     if (this.props.counts.bomberos !== undefined) {
@@ -445,7 +460,7 @@ class Stadistics extends Component {
             onRef={ref => this.chart = ref}
             />
           </div>
-          <div className="formContainer">
+          {/* <div className="formContainer">
             <h2 className="tituloFiltros">Gráficos con filtros</h2>
             <div className="row">
               <div className="dateFilter">
@@ -470,7 +485,7 @@ class Stadistics extends Component {
                 <button type="button" onClick={() => this.submitForm()} className="submitDireccion"> Filtrar </button>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       );
     } else {

@@ -8,18 +8,19 @@ import {
   LIST_USERS,
   PENDING_USERS,
   MAP_SHOW,
-  LOGIN_ERR
+  LOGIN_ERR,
+  FETCH_CART,
+  FETCH_TOTAL
 } from "./types";
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 
 export const userLoginPost = userInfo => dispatch => {
   console.log(userInfo);
+  var usuario = userInfo.email
+  var contraseña = userInfo.password
   axios
-    .post(`http://18.230.143.84:4000/monitoreo_auth`, {
-      email: userInfo.email,
-      password: userInfo.password
-    })
+    .post("http://52.67.84.234:4000/client_auth", {usuario, contraseña})
     .then(res => {
       console.log("client auth");
       localStorage.setItem("token", res.data);
@@ -28,16 +29,8 @@ export const userLoginPost = userInfo => dispatch => {
         type: LOGIN_USER,
         payload: { decode }
       });
-      if(userInfo.url === "/login"){
-        console.log("centro monitoreo")
-        window.location.href = "/";
-      }else{
-        if(userInfo.url === "/login_ingreso_manual"){
-          console.log("ingreso manual")
-          window.location.href = "/ingreso_manual";
-        }
-      }
-      console.log(res);
+      console.log("centro monitoreo")
+      window.location.href = "/";
     })
     .catch(err => {
       const error = 1
@@ -54,7 +47,7 @@ export function validateUser() {
     console.log("vali user");
     if (token) {
       axios
-        .post(`http://18.230.143.84:4000/tokenAuth`, { token: token })
+        .post(`http://52.67.84.234:4000/tokenAuth`, { token: token })
         .then(res => {
           console.log("client auth");
           var decode = jwtDecode(token);
@@ -158,8 +151,12 @@ export const countAlertsFiltered = (desde, hasta) => dispatch => {
 };
 
 export const getUsers = () => dispatch => {
+  const token = localStorage.token;
+  var decode = jwtDecode(token)
+  var id_cliente = decode.id_cliente
+  console.log(decode, decode.id_cliente)
   axios
-    .post("http://52.67.84.234:4000/items")
+    .post("http://52.67.84.234:4000/items", {id_cliente})
     .then(res => {
       var users = res.data;
       dispatch({
@@ -172,9 +169,81 @@ export const getUsers = () => dispatch => {
     });
 };
 
-export const getProductsFiltered = (nombre, tipo) => dispatch => {
+export const getCarrito = (carrito, barcode, nombre, precio, stock) => dispatch =>{
+
+  carrito.push({id:barcode, barcode: barcode, nombre: nombre, precio: precio, stock: stock, cantidad: 1})
+  dispatch({
+    type: FETCH_CART,
+    payload: carrito
+  });
+  var sumaTotal = 0
+  console.log(carrito)
+  carrito.map(function(item){
+    var precio = parseFloat(item.precio) * parseInt(item.cantidad)
+    console.log(precio)
+    sumaTotal = parseFloat(sumaTotal) + parseFloat(precio)
+    sumaTotal = parseFloat(sumaTotal).toFixed(2)
+    console.log(sumaTotal, "soy sumaTotal")
+  })
+  console.log(sumaTotal, "termine el loop")
+  dispatch({
+    type: FETCH_TOTAL,
+    payload: sumaTotal
+  })
+}
+
+export const postVenta = (items, totalObj, id_cliente) => dispatch =>{
+
+  var total = {total:totalObj}
   axios
-    .post("http://52.67.84.234:4000/items_filtered", {tipo, nombre})
+    .post("http://52.67.84.234:4000/venta", {items, total, id_cliente})
+    .then(() => {
+      console.log("im in then")
+      items = []
+      totalObj = 0.00
+      dispatch({
+        type: FETCH_CART,
+        payload: items
+      });
+      dispatch({
+        type: FETCH_TOTAL,
+        payload: totalObj
+      })
+    })
+    .catch((err) => console.log(err))
+}
+
+
+export const cantidadChange = (items, barcode, cantidad) => dispatch =>{
+  var array = []
+  var sumaTotal = 0
+  array = items.map(function(item){
+    if (item.barcode === barcode){
+      item.cantidad = cantidad
+      var precio = parseFloat(item.precio) * parseInt(item.cantidad)
+      sumaTotal = parseFloat(sumaTotal) + parseFloat(precio)
+      sumaTotal = parseFloat(sumaTotal).toFixed(2)
+      return item
+    } else {
+      var precio = parseFloat(item.precio) * parseInt(item.cantidad)
+      sumaTotal = parseFloat(sumaTotal) + parseFloat(precio)
+      sumaTotal = parseFloat(sumaTotal).toFixed(2)
+      return item
+    }
+  })
+  dispatch({
+    type: FETCH_CART,
+    payload: array
+  });
+  dispatch({
+    type: FETCH_TOTAL,
+    payload: sumaTotal
+  })
+}
+
+export const getProductsFiltered = (nombre, tipo, id_cliente) => dispatch => {
+  axios
+    .post("http://52.67.84.234:4000/items_filtered", {tipo, nombre, id_cliente})
     .then(res => {
       var users = res.data;
       dispatch({

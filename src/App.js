@@ -156,7 +156,7 @@ class App extends Component {
                 }}
               />
               <PrivateRoute exact path="/" component={WebApp} />
-              <PrivateRoute exact path="/ingreso" component={UserList} />
+              <PrivateRoute exact path="/ingreso" component={WebApp} />
               <PrivateRoute exact path="/stadistics" component={Stadistics} />
               <PrivateRoute exact path="/lists/productos" component={UserList} />
               <PrivateRouteManual exact path="/ingreso_manual" component={SelectBoxAlertas} />

@@ -48,7 +48,7 @@ class Header extends Component {
   render() {
     var { counted_users } = this.props.pendingUsers;
     if (this.props.currentUser !== undefined) {
-      var { email, nombre_completo } = this.props.currentUser;
+      var { email, usuario } = this.props.currentUser;
       return (
         <header className="header">
           <div className="links">
@@ -99,14 +99,14 @@ class Header extends Component {
                     color: "white"
                   }}
                 />{" "}
-                Usuarios
+                Productos
               </div>{" "}
             </div>
           </div>
           <div className="info">
             <div className="userInfo">
               <h3>{email}</h3>
-              <h3>{nombre_completo}</h3>
+              <h3>{usuario}</h3>
             </div>
             <div className="logOut" onClick={() => logOut()}>
               <div>

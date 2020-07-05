@@ -91,10 +91,10 @@ class UserList extends Component {
         className="usersContainer"
         style={{ height: this.stateHeight.heightHolder }}
       >
-        <div className="titulo">
-          <div> Productos </div>
-          <div> Ventas </div>
-        </div>
+        {/* <div className="titulo">
+          <div className="subnavItem"> Productos </div>
+          <div className="subnavItem"> Ventas </div>
+        </div> */}
         <Productos/>
       </div>
     );
