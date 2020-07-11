@@ -4,7 +4,7 @@ import SwitchComponentPerimetral from "./SwitchComponentPerimetral";
 import dateFormat from "dateformat";
 import axios from "axios";
 import { connect } from "react-redux";
-import { cantidadChange } from "./actions/postActions";
+import { cantidadChange, erraseItem } from "./actions/postActions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { confirmAlert } from 'react-confirm-alert';
 import './react-confirm.css'; 
@@ -26,6 +26,10 @@ class CartItem extends Component {
     this.props.cantidadChange(this.props.carrito, barcode, cantidad)
   }
 
+  delete(){
+
+  }
+
   render() {
     const {
       barcode,
@@ -41,7 +45,8 @@ class CartItem extends Component {
         <th className="XG">{nombre}</th>
         <th className="S">${precioVisible}</th>
         <th className="S">{stock}</th>
-        <th className="N">{cantidad} <FontAwesomeIcon icon="plus-circle" onClick={() => this.changeCantidad("plus", cantidad, barcode)} /> <FontAwesomeIcon icon="plus-circle" onClick={() => this.changeCantidad("minus", cantidad, barcode)} /></th>
+        <th className="N">{cantidad} <FontAwesomeIcon icon="plus-circle" onClick={() => this.changeCantidad("plus", cantidad, barcode)} /> <FontAwesomeIcon icon="minus-circle" onClick={() => this.changeCantidad("minus", cantidad, barcode)} /></th>
+        <th className="S"> <FontAwesomeIcon icon="times-circle" style={{color: "red"}} onClick={() => this.props.erraseItem(this.props.carrito, barcode, precioVisible)} /> </th>
       </tr>
     );
   }
@@ -51,5 +56,5 @@ const mapStateToProps = state => ({
   carrito: state.posts.carrito
 });
 
-export default connect(mapStateToProps, { cantidadChange })(CartItem);
+export default connect(mapStateToProps, { cantidadChange, erraseItem })(CartItem);
 

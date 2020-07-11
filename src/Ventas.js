@@ -59,6 +59,26 @@ class Ventas extends Component {
       })
   }
 
+  handleSubmit(){
+    const barcode = document.getElementById("productoInput").value
+    var id_cliente = this.props.currentUser.id_cliente
+    axios
+      .post("http://177.71.157.129:4000/item", {barcode, id_cliente})
+      .then(response => {
+          console.log(response)
+          var { nombre, precio, stock } = response.data[0]
+          var precio = parseFloat(precio).toFixed(2);
+          var stock = stock.toString();
+          if(nombre !== null){
+            this.props.getCarrito(this.props.carrito, barcode, nombre, precio, stock)
+          }
+
+      })
+      .catch(err => {
+          console.log(err)
+      })
+  }
+
   handleScan(data){
     console.log(data)
     const barcode = data
@@ -108,7 +128,7 @@ class Ventas extends Component {
               </div>
             </div>
           </div>
-          <button type="button" onClick={() => this.addItem()} className="submitDireccion"> Añadir </button>
+          <button type="button" onClick={() => this.handleSubmit()} className="submitDireccion"> Añadir </button>
         </div>
         <div className="heighter">
           <table className="table-container">
@@ -118,6 +138,7 @@ class Ventas extends Component {
               <th className="S">Precio</th>
               <th className="S">Stock</th>
               <th className="N">Cantidad</th>
+              <th className="S">Borrar</th>
             </tr>
             <div className="scroller">
               {this.props.carrito.map(function(cart, idx) {

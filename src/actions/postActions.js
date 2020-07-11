@@ -192,6 +192,29 @@ export const getCarrito = (carrito, barcode, nombre, precio, stock) => dispatch 
   })
 }
 
+export const erraseItem = (carrito, barcode, precio) => dispatch =>{
+
+   var aux = carrito.filter(item => item.barcode !== barcode)
+  dispatch({
+    type: FETCH_CART,
+    payload: aux
+  });
+  var sumaTotal = 0
+  console.log(carrito)
+  aux.map(function(item){
+    var precio = parseFloat(item.precio) * parseInt(item.cantidad)
+    console.log(precio)
+    sumaTotal = parseFloat(sumaTotal) + parseFloat(precio)
+    sumaTotal = parseFloat(sumaTotal).toFixed(2)
+    console.log(sumaTotal, "soy sumaTotal")
+  })
+  console.log(sumaTotal, "termine el loop")
+  dispatch({
+    type: FETCH_TOTAL,
+    payload: sumaTotal
+  })
+}
+
 export const postVenta = (items, totalObj, id_cliente) => dispatch =>{
 
   var total = {total:totalObj}
