@@ -112,21 +112,15 @@ class Ventas extends Component {
   render() {
     var total = this.props.total
     return (
-      <div className="tabla">
+      <div className="tabla" style={{ height: this.stateHeight.heightHolder }}>
         <BarcodeReader
           onError={this.handleError}
           onScan={this.handleScan}
           />
         <div className="filterContainer">
           <div className="formContainer">
-            <div className="dateFilter">
-              <div className="dates">
-                <div className="date">
-                  <h2>Codigo de barras:</h2>
-                  <input type="text" className=" css-yk16xz-control" id="productoInput"></input>
-                </div>
-              </div>
-            </div>
+            <h2>Codigo de barras:</h2>
+            <input type="text" className="input_venta" placeholder="Codigo de barras..." id="productoInput"></input>
           </div>
           <button type="button" onClick={() => this.handleSubmit()} className="submitDireccion"> Añadir </button>
         </div>
@@ -149,14 +143,8 @@ class Ventas extends Component {
         </div>
         <div className="filterContainer">
           <div className="formContainer">
-            <div className="dateFilter">
-              <div className="dates">
-                <div className="date">
-                  <h2>Total:</h2>
-                  <h2>${total}</h2>
-                </div>
-              </div>
-            </div>
+            <h2>Total:</h2>
+            <h2>${total}</h2>
           </div>
           <button type="button" onClick={() => this.submitForm()} className="submitDireccion"> Confirmar venta</button>
         </div>

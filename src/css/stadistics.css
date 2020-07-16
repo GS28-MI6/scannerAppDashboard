@@ -78,10 +78,28 @@
 .formContainer{
     display: flex;
     width: 100%;
-    justify-content: center;
+    height: 100%;
+    flex-direction: row;
+    justify-content: flex-start;
     align-items: center;
     margin-left: 0!important;
     margin-right: 0!important;
+}
+
+.formContainer h2{
+    padding-left: 3%;
+    color: rgb(71, 71, 71);
+}
+
+.input_venta{
+    background-color: white;
+    border-color: gray;
+    margin-left: 15px;
+    border-width: 0 0 1px 0;
+    top: 5px;
+}
+.input_venta:focus{
+    outline: none;
 }
 
 .tituloFiltros{
@@ -97,17 +115,17 @@
     flex-direction: column;
     width: 50%;
     height: 100%;
-    justify-content: center;
-    align-items: center;
+    justify-content: space-between;
 }
-.filterContainer{
+.tabla .filterContainer{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
     width: 90%;
+    height: 10%;
     margin-top: 20px;
-    background: whitesmoke;
+    background: white;
     border: 1px solid rgb(161, 161, 161);
 }
 .dates{
@@ -137,13 +155,58 @@
 .css-2b097c-container{
     width: 67%;
 }
+.productos .formContainer .css-2b097c-container{
+    margin-left: 3%;
+    width: 30%;
+}
 
 .submitDireccion{
     width: 40%;
-    height: 50px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    margin-bottom: 1%;
+    height: 100%;
     font-family: Arial, Helvetica, sans-serif;
     font-weight: bold;
+}
+
+.agregar{
+    width: 50%;
+    height: 10%!important;
+    margin-bottom: 10%;
+}
+
+.ingresos{
+    display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  width: 50%;
+  height: 90%;
+  margin-top: 20px;
+  background: white;
+  border: 1px solid rgb(161, 161, 161);
+}
+
+.formIngresos{
+    padding-top: 3%;
+    padding-left: 10%;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    margin-left: 0!important;
+    margin-right: 0!important;
+}
+
+.formIngresos h2{
+    padding-bottom: 1%;
+    color: rgb(71, 71, 71);
+}
+
+.formIngresos .css-2b097c-container{
+    width: 90%;
+    margin: 0!important;
+}
+.formIngresos .inputIngreso{
+    width: 90%;
 }

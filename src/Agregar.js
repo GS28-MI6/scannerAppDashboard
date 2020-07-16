@@ -19,7 +19,7 @@ const options = [
 ];
 
 
-class Ventas extends Component {
+class Agregar extends Component {
   constructor(props) {
     super(props);
     var heightHolder = window.innerHeight - 50;
@@ -142,17 +142,14 @@ class Ventas extends Component {
           onError={this.handleError}
           onScan={this.handleScan}
         />
-        <div className="filterContainer">
-          <div className="formContainer">
-            <div className="dateFilter">
-              <div className="dates">
-                <div className="date">
+        <div className="ingresos">
+          <div className="formIngresos">
                   <h2>Codigo de barras:</h2>
-                  <input type="text" className=" css-yk16xz-control" id="barcodeInput"></input>
+                  <input type="text" className=" css-yk16xz-control inputIngreso" id="barcodeInput"></input>
                   <h2>Producto:</h2>
-                  <input type="text" className=" css-yk16xz-control" id="productoInput"></input>
+                  <input type="text" className=" css-yk16xz-control inputIngreso" id="productoInput"></input>
                   <h2>Precio:</h2>
-                  <input type="text" className=" css-yk16xz-control" id="precioInput"></input>
+                  <input type="text" className=" css-yk16xz-control inputIngreso" id="precioInput"></input>
                   <h2>Categoria:</h2>
                   <CreatableSelect
                     value={this.state.selectedOption.value}
@@ -161,12 +158,9 @@ class Ventas extends Component {
                     options={options}
                     />
                   <h2>Stock:</h2>
-                  <input type="text" className=" css-yk16xz-control" id="stockInput"></input>
-                </div>
-              </div>
-            </div>
+                  <input type="text" className=" css-yk16xz-control inputIngreso" id="stockInput"></input>
           </div>
-          <button type="button" onClick={() => this.submitForm()} className="submitDireccion"> Añadir </button>
+          <button type="button" onClick={() => this.submitForm()} className="submitDireccion agregar"> Añadir </button>
         </div>
       </div>
     );
@@ -179,4 +173,4 @@ const mapStateToProps = state => ({
   currentUser: state.posts.currentUser.decode,
 });
 
-export default connect(mapStateToProps, { activateUser, getUsers, getProductsFiltered, getCarrito  })(Ventas);
+export default connect(mapStateToProps, { activateUser, getUsers, getProductsFiltered, getCarrito  })(Agregar);

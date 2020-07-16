@@ -12,7 +12,8 @@ const options = [
   { value: "Infusiones", label: "Infusiones"},
   { value: "Limpieza", label: "Limpieza"},
   { value: "Bebidas con alcohol", label: "Bebidas con alcohol"},
-  { value: "Bebidas sin alcohol", label: "Bebidas sin alcohol"}
+  { value: "Bebidas sin alcohol", label: "Bebidas sin alcohol"},
+  { value: "Golosinas", label: "Golosinas"}
 ];
 
 class Productos extends Component {
@@ -28,7 +29,7 @@ class Productos extends Component {
     this.state ={
       selectedOption: {
         value: "",
-        label: "General"
+        label: "Seleccione una categoria..."
       }
     }
     this.submitForm = this.submitForm.bind(this);
@@ -68,28 +69,20 @@ class Productos extends Component {
   render() {
     return (
       <div className="tabla">
-        <div className="filterContainer">
-          <h2>Filtrado de Productos</h2>
+        <h2>Filtrado de Productos</h2>
+        <div className="productos">
           <div className="formContainer">
-            <div className="dateFilter">
-              <div className="dates">
-                <div className="date">
-                  <h2>Nombre:</h2>
-                  <input type="text" className=" css-yk16xz-control productos" id="dateFrom"></input>
-                </div>
-              </div>
-            </div>
-            <div className="dateFilter">
-              <h2 className="dateTitle">Seleccione una categoria</h2>
-              <CreatableSelect
-              value={this.state.selectedOption.value}
-              placeholder= {this.state.selectedOption.label}
-              onChange={e => this.handleChange(e)}
-              options={options}
-              />
-            </div>
+            <h2>Nombre:</h2>
+            <input type="text" className=" input_venta" id="dateFrom"></input>
+            <h2>Categoria:</h2>
+            <CreatableSelect
+            value={this.state.selectedOption.value}
+            placeholder= {this.state.selectedOption.label}
+            onChange={e => this.handleChange(e)}
+            options={options}
+            />
           </div>
-          <button type="button" onClick={() => this.submitForm()} className="submitDireccion"> Filtrar </button>
+            <button type="button" onClick={() => this.submitForm()} className="submitDireccion"> Filtrar </button>
         </div>
         <div className="heighter">
           <table className="table-container">
