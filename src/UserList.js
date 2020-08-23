@@ -15,7 +15,8 @@ const options = [
   { value: "Infusiones", label: "Infusiones"},
   { value: "Limpieza", label: "Limpieza"},
   { value: "Bebidas con alcohol", label: "Bebidas con alcohol"},
-  { value: "Bebidas sin alcohol", label: "Bebidas sin alcohol"}
+  { value: "Bebidas sin alcohol", label: "Bebidas sin alcohol"},
+  { value: "Golosinas", label: "golosinas"}
 ];
 
 var dataPoints =[];

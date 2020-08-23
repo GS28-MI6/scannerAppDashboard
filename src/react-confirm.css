@@ -131,6 +131,10 @@ body.react-confirm-alert-body-element {
     background: #28bae6;
     box-shadow: 0 20px 75px rgba(0, 0, 0, 0.23);
     color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
   
   .custom-ui > h1 {

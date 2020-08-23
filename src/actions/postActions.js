@@ -171,6 +171,8 @@ export const getUsers = () => dispatch => {
 
 export const getCarrito = (carrito, barcode, nombre, precio, stock) => dispatch =>{
 
+  console.log(barcode, nombre, precio, stock)
+
   carrito.push({id:barcode, barcode: barcode, nombre: nombre, precio: precio, stock: stock, cantidad: 1})
   dispatch({
     type: FETCH_CART,
