@@ -70,7 +70,7 @@ class Stadistics extends Component {
         var dia = fecha.split('-')[2]
         console.log(fecha, año, mes, dia)
         dataPoints.push({
-          x: new Date(año, mes, dia),
+          x: new Date(fecha + "T00:00:00"), // sin eso me tiraria un mes adicional because reasons
           y: datos[i].total_venta
         });
       }
@@ -110,7 +110,7 @@ class Stadistics extends Component {
           var dia = fecha.split('-')[2]
           console.log(fecha, año, mes, dia)
           dataPoints.push({
-            x: new Date(año, mes, dia),
+            x: new Date(fecha + "T00:00:00"), // sin eso me tiraria un mes adicional because reasons
             y: datos[i].tipo
           });
         }
@@ -196,7 +196,6 @@ class Stadistics extends Component {
 			},
 			data: [{
 				type: "line",
-				xValueFormatString: "####",
 				yValueFormatString: "#",
 				dataPoints: dataPoints
       }]
