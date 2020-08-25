@@ -13,6 +13,7 @@ const options = [
   { value: "Comestibles", label: "Comestibles"},
   { value: "Galletitas", label: "Galletitas"},
   { value: "Infusiones", label: "Infusiones"},
+  { value: "Lacteos", label: "Lacteos"},
   { value: "Limpieza", label: "Limpieza"},
   { value: "Bebidas con alcohol", label: "Bebidas con alcohol"},
   { value: "Bebidas sin alcohol", label: "Bebidas sin alcohol"},
