@@ -159,9 +159,7 @@ class App extends Component {
               <PrivateRoute exact path="/ingreso" component={WebApp} />
               <PrivateRoute exact path="/stadistics" component={Stadistics} />
               <PrivateRoute exact path="/lists/productos" component={UserList} />
-              <PrivateRouteManual exact path="/ingreso_manual" component={SelectBoxAlertas} />
               <Route path="/login" render={props => <Login />} />
-              <Route path="/login_ingreso_manual" render={props => <Login />} />
             </div>
           </div>
         </Router>

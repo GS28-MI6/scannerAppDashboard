@@ -54,7 +54,7 @@ class PopUp extends Component {
       } else {
         if (this.props.alert.state === "activo" || this.props.alert.map_show === 1){
           if(this.overlay !== undefined){
-            console.log("ya existia entonces reañado")
+            console.log("ya existia entonces reañado", id)
             this.props.map.addOverlay(this.overlay);
           } else {
             console.log("existia id pero no overlay")

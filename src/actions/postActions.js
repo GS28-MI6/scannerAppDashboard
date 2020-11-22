@@ -171,9 +171,18 @@ export const getUsers = () => dispatch => {
 
 export const getCarrito = (carrito, barcode, nombre, precio, stock) => dispatch =>{
 
+  let exists = false
   console.log(barcode, nombre, precio, stock)
-
-  carrito.push({id:barcode, barcode: barcode, nombre: nombre, precio: precio, stock: stock, cantidad: 1})
+  carrito.map((item) => {
+    if(item.barcode === barcode){
+      exists = true
+      item.cantidad = item.cantidad + 1
+    }
+    return item
+  })
+  if(!exists){
+    carrito.push({id:barcode, barcode: barcode, nombre: nombre, precio: precio, stock: stock, cantidad: 1})
+  }
   dispatch({
     type: FETCH_CART,
     payload: carrito
@@ -220,22 +229,27 @@ export const erraseItem = (carrito, barcode, precio) => dispatch =>{
 export const postVenta = (items, totalObj, id_cliente) => dispatch =>{
 
   var total = {total:totalObj}
-  axios
-    .post("http://177.71.157.129:4000/venta", {items, total, id_cliente})
-    .then(() => {
-      console.log("im in then")
-      items = []
-      totalObj = 0.00
-      dispatch({
-        type: FETCH_CART,
-        payload: items
-      });
-      dispatch({
-        type: FETCH_TOTAL,
-        payload: totalObj
+  if (totalObj !== 0.00) {
+    axios
+      .post("http://177.71.157.129:4000/venta", {items, total, id_cliente})
+      .then((response) => {
+        console.log(response)
+        items = []
+        totalObj = 0.00
+        dispatch({
+          type: FETCH_CART,
+          payload: items
+        });
+        dispatch({
+          type: FETCH_TOTAL,
+          payload: totalObj
+        })
+        alert("Venta realizada")
       })
-    })
-    .catch((err) => console.log(err))
+      .catch((err) => alert(err))
+  } else {
+    alert("Ingrese al menos un producto")
+  }
 }
 
 

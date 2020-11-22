@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import CartItem from "./CartItem";
 import { connect } from "react-redux";
-import { activateUser, getUsers, getProductsFiltered, getCarrito, postVenta } from "./actions/postActions";
+import { activateUser, getUsers, getProductsFiltered, getCarrito, postVenta, cantidadChange, erraseItem } from "./actions/postActions";
 import CreatableSelect from "react-select";
 import { confirmAlert } from 'react-confirm-alert';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import './react-confirm.css'; 
 import axios from "axios";
 import "./css/users.css";
@@ -35,9 +36,9 @@ class Ventas extends Component {
       heightHolder: heightHolder
     };
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
-    this.additem = this.additem.bind(this)
     this.handleScan = this.handleScan.bind(this)
     this.submitForm = this.submitForm.bind(this)
+    this.changeCantidad = this.changeCantidad.bind(this)
   }
 
   submit = ( barcode ) => {
@@ -45,7 +46,7 @@ class Ventas extends Component {
       customUI: ({ onClose }) => {
         return (
           <div className="custom-ui">
-            <h1 className="tituloFiltros">Gráficos con filtros</h1>
+            <h1 className="tituloFiltros">Agregar un producto</h1>
                 <h2 className="catTitle">Seleccione una categoria</h2>
                 <CreatableSelect
                 value={this.state.selectedOption.value}
@@ -56,7 +57,7 @@ class Ventas extends Component {
                 <h2 className="dateTitle">Precio:</h2>
                 <input type="text" placeholder="Precio..." id="precio" className="css-yk16xz-control popupInput"></input>
                 <br></br>
-                <button type="button" onClick={() => {this.submitForm( barcode ); onClose()}} className="buttonAlert"> Filtrar </button>
+                <button type="button" onClick={() => {this.submitForm( barcode ); onClose()}} className="buttonAlert"> Agregar </button>
           </div>
         );
       }
@@ -95,32 +96,6 @@ class Ventas extends Component {
     };
   }
 
-  additem(){
-    var data = document.getElementById("productoInput").value
-    console.log(data)
-    const barcode = data
-    var id_cliente = this.props.currentUser.id_cliente
-    if( barcode !== "12345"){
-      axios
-        .post("http://177.71.157.129:4000/item", {barcode, id_cliente})
-        .then(response => {
-            console.log(response)
-            var { nombre, precio, stock } = response.data[0]
-            var precio = parseFloat(precio).toFixed(2);
-            var stock = stock.toString();
-            if(nombre !== null){
-              this.props.getCarrito(this.props.carrito, barcode, nombre, precio, stock)
-            }
-  
-        })
-        .catch(err => {
-            console.log(err)
-        })
-    } else {
-      this.submit(barcode)
-    }
-  }
-
   handleSubmit(){
     const barcode = document.getElementById("productoInput").value
     var id_cliente = this.props.currentUser.id_cliente
@@ -135,7 +110,6 @@ class Ventas extends Component {
             if(nombre !== null){
               this.props.getCarrito(this.props.carrito, barcode, nombre, precio, stock)
             }
-  
         })
         .catch(err => {
             console.log(err)
@@ -175,6 +149,19 @@ class Ventas extends Component {
     this.props.postVenta(this.props.carrito, this.props.total, this.props.currentUser.id_cliente)
   }
 
+  changeCantidad(type, cantidad, barcode){
+    if (type === "plus") {
+      cantidad = cantidad + 1
+    } else {
+      if(cantidad !== 1){
+        cantidad = cantidad - 1
+      } else {
+        cantidad = cantidad
+      }
+    }
+    this.props.cantidadChange(this.props.carrito, barcode, cantidad)
+  }
+
   render() {
     var total = this.props.total
     return (
@@ -202,8 +189,25 @@ class Ventas extends Component {
               <th className="S">Borrar</th>
             </tr>
             <div className="scroller">
-              {this.props.carrito.map(function(cart, idx) {
-                return <CartItem key={idx} cart={cart} />;
+              {this.props.carrito.map(function(cart) {
+                const {
+                  barcode,
+                  nombre,
+                  precio,
+                  stock,
+                  cantidad
+                } = cart;
+                const precioVisible = precio*cantidad
+                return (
+                  <tr className="table-row">
+                    <th className="N">{barcode}</th>
+                    <th className="XG">{nombre}</th>
+                    <th className="S">${precioVisible}</th>
+                    <th className="S">{stock}</th>
+                    <th className="N">{cantidad} <FontAwesomeIcon icon="plus-circle" onClick={() => this.changeCantidad("plus", cantidad, barcode)} /> <FontAwesomeIcon icon="minus-circle" onClick={() => this.changeCantidad("minus", cantidad, barcode)} /></th>
+                    <th className="S"> <FontAwesomeIcon icon="times-circle" style={{color: "red"}} onClick={() => this.props.erraseItem(this.props.carrito, barcode, precioVisible)} /> </th>
+                  </tr>
+                );
               }, this)}
             </div>
           </table>
@@ -226,4 +230,4 @@ const mapStateToProps = state => ({
   currentUser: state.posts.currentUser.decode,
 });
 
-export default connect(mapStateToProps, { activateUser, getUsers, getProductsFiltered, getCarrito, postVenta })(Ventas);
+export default connect(mapStateToProps, { activateUser, getUsers, getProductsFiltered, getCarrito, postVenta, cantidadChange, erraseItem  })(Ventas);

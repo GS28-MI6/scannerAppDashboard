@@ -14,20 +14,20 @@ class CartItem extends Component {
   constructor(props) {
     super(props);
     this.state = { habilitado: false };
-    this.changeCantidad = this.changeCantidad.bind(this)
+    
   }
 
   changeCantidad(type, cantidad, barcode){
     if (type === "plus") {
       cantidad = cantidad + 1
     } else {
-      cantidad = cantidad - 1
+      if(cantidad !== 1){
+        cantidad = cantidad - 1
+      } else {
+        cantidad = cantidad
+      }
     }
     this.props.cantidadChange(this.props.carrito, barcode, cantidad)
-  }
-
-  delete(){
-
   }
 
   render() {
