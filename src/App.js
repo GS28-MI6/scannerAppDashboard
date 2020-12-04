@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 import Header from "./components/layout/Header";
 import Login from "./login";
-import Protected from "./Protected";
 import Stadistics from "./Stadistics";
 import UserList from "./UserList";
 import WebApp from "./WebApp";
@@ -19,10 +18,8 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import store from "./store";
 import { connect } from "react-redux";
-import { selecting, fetchPosts } from "./actions/postActions";
 import io from "socket.io-client";
 import jwtDecode from "jwt-decode";
-import SelectBoxAlertas from './selectBoxAlertas';
 import UIfx from "uifx";
 import bellAudio from "./resources/Alert.mp3";
 
@@ -172,4 +169,4 @@ const mapStateToProps = state => ({
   currentUser: state.posts.currentUser
 });
 
-export default connect(mapStateToProps, { selecting, fetchPosts })(App);
+export default connect(mapStateToProps, null )(App);

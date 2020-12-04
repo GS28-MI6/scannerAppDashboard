@@ -1,10 +1,6 @@
 import React, { Component } from "react";
-import UserItem from "./UserItem";
 import { connect } from "react-redux";
-import { activateUser, getUsers, getProductsFiltered } from "./actions/postActions";
-import io from "socket.io-client";
-import CreatableSelect from "react-select";
-import axios from "axios";
+import {getUsers, getProductsFiltered } from "./actions/postActions";
 import Productos from "./Productos.js";
 import "./css/users.css";
 import "./css/stadistics.css";
@@ -23,14 +19,12 @@ const options = [
 var dataPoints =[];
 
 
-const socket = io("http://18.230.143.84:4000", {
-  transports: ["websocket", "polling"]
-});
+
 
 class UserList extends Component {
   constructor(props) {
     super(props);
-    // this.eventUser = new EventSource("http://18.230.143.84:4000/events_users");
+
     this.props.getUsers();
     var heightHolder = window.innerHeight - 50;
     this.stateHeight = {
@@ -49,16 +43,6 @@ class UserList extends Component {
   }
   componentDidMount() {
     window.addEventListener("resize", this.updateWindowDimensions);
-    // this.eventUser.onmessage = event => {
-    //   console.log(event)
-    //   this.props.getUsers()
-    // };
-    socket.on("usuario_registrado", datosAlerta => {
-      console.log("usuario fking registrado!!!!!!");
-      console.log(datosAlerta);
-      this.props.getUsers();
-      window.location.href = "/users";
-    });
   }
   componentWillUnmount() {
     window.removeEventListener("resize", this.updateWindowDimensions);
@@ -93,10 +77,6 @@ class UserList extends Component {
         className="usersContainer"
         style={{ height: this.stateHeight.heightHolder }}
       >
-        {/* <div className="titulo">
-          <div className="subnavItem"> Productos </div>
-          <div className="subnavItem"> Ventas </div>
-        </div> */}
         <Productos/>
       </div>
     );
@@ -107,4 +87,4 @@ const mapStateToProps = state => ({
   users: state.posts.users
 });
 
-export default connect(mapStateToProps, { activateUser, getUsers, getProductsFiltered })(UserList);
+export default connect(mapStateToProps, { getUsers, getProductsFiltered })(UserList);

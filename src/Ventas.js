@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import CartItem from "./CartItem";
 import { connect } from "react-redux";
 import {
-  activateUser,
   getUsers,
   getProductsFiltered,
   getCarrito,
@@ -316,7 +314,6 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {
-  activateUser,
   getUsers,
   getProductsFiltered,
   getCarrito,

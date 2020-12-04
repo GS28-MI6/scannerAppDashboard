@@ -1,13 +1,6 @@
 import {
-  FETCH_POSTS,
-  NEW_POST,
-  NEW_DIR,
-  SELECT_ALERT,
   LOGIN_USER,
-  COUNT_ALERTS,
   LIST_USERS,
-  PENDING_USERS,
-  MAP_SHOW,
   LOGIN_ERR,
   FETCH_CART,
   FETCH_TOTAL
@@ -70,85 +63,10 @@ export function validateUser() {
   };
 }
 
-export const usersNotification = () => dispatch => {
-  axios
-    .get("http://18.230.143.84:4000/pending_users")
-    .then(res => {
-      var pendingUsers = res.data[0];
-      dispatch({
-        type: PENDING_USERS,
-        payload: pendingUsers
-      });
-    })
-    .catch(error => {
-      console.log(error);
-    });
-};
-
-export const mapShower = (userState, id) => dispatch => {
-  const token = localStorage.token;
-  axios
-    .post(`http://18.230.143.84:4000/showOnMap`, { userState, id })
-    .then(res => {
-      console.log(res);
-      dispatch({
-        type: "MAP_SHOW",
-        payload: res.data
-      });
-    })
-    .catch(err => {
-      console.log("catch is running");
-      localStorage.removeItem("token");
-    });
-};
 
 
-export const fetchPosts = () => dispatch => {
-  console.log("action but no axios");
-  axios
-    .get("http://18.230.143.84:4000/app")
-    .then(res => {
-      console.log("fetch posts");
-      var alerts = res.data;
-      dispatch({
-        type: FETCH_POSTS,
-        payload: alerts
-      });
-    })
-    .catch(error => {
-      console.log(error);
-    });
-};
 
-export const countAlerts = () => dispatch => {
-  axios
-    .post("http://18.230.143.84:4000/count")
-    .then(res => {
-      var counts = res.data;
-      dispatch({
-        type: COUNT_ALERTS,
-        payload: counts
-      });
-    })
-    .catch(error => {
-      console.log(error);
-    });
-};
 
-export const countAlertsFiltered = (desde, hasta) => dispatch => {
-  axios
-    .post("http://18.230.143.84:4000/count", { desde, hasta })
-    .then(res => {
-      var counts = res.data;
-      dispatch({
-        type: COUNT_ALERTS,
-        payload: counts
-      });
-    })
-    .catch(error => {
-      console.log(error);
-    });
-};
 
 export const getUsers = () => dispatch => {
   const token = localStorage.token;
@@ -292,89 +210,5 @@ export const getProductsFiltered = (nombre, tipo, id_cliente) => dispatch => {
     })
     .catch(error => {
       console.log(error);
-    });
-};
-
-export const activateUser = user => {
-  console.log(user);
-  axios.post(`http://18.230.143.84:4000/activation`, { user }).then(res => {
-    console.log(res);
-  });
-};
-
-export const postStateDataHolder = (datos, state) => {
-  console.log(datos, state);
-  datos.state = state;
-  var data = datos;
-  axios.post(`http://18.230.143.84:4000/changeState`, { data }).then(res => {
-    console.log(res);
-  });
-};
-
-export const postState = (datos) => dispatch => {
-  var data = datos;
-  axios.post(`http://18.230.143.84:4000/changeState`, { data }).then(res => {
-    console.log(res);
-  });
-};
-
-export const postDireccion = (datos) => dispatch => {
-  console.log("al menos vine")
-  var data = datos;
-  axios.post(`http://18.230.143.84:4000/changeAddress`, { data }).then(res => {
-    console.log(res);
-  });
-};
-
-export const selecting = alert => dispatch => {
-  dispatch({ type: SELECT_ALERT, payload: alert });
-  var lon = alert.longitud;
-  var lat = alert.latitud;
-  axios
-    .get(
-      "http://nominatim.openstreetmap.org/reverse?format=json&lon=" +
-        lon +
-        "&lat=" +
-        lat
-    )
-    .then(res => {
-      console.log(res.data);
-      dispatch({
-        type: NEW_DIR,
-        payload: res.data
-      });
-    });
-};
-
-export const createPost = event => dispatch => {
-  var eventDataHolder = event.data;
-  console.log(eventDataHolder);
-  var lon = eventDataHolder[0].longitud;
-  var lat = eventDataHolder[0].latitud;
-  console.log(lon, lat);
-  axios.get("http://18.230.143.84:4000/app").then(res => {
-    console.log(res.data);
-    var dataJSON = eventDataHolder;
-    dataJSON = dataJSON[0];
-    dispatch({
-      type: NEW_POST,
-      payloadAlerts: res.data,
-      payloadAlert: dataJSON
-    });
-  });
-  console.log("finished first axios", lon, lat);
-  axios
-    .get(
-      "http://nominatim.openstreetmap.org/reverse?format=json&lon=" +
-        lon +
-        "&lat=" +
-        lat
-    )
-    .then(res => {
-      console.log(res.data);
-      dispatch({
-        type: NEW_DIR,
-        payload: res.data
-      });
     });
 };

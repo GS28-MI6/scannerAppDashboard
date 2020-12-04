@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import CartItem from "./CartItem";
 import { connect } from "react-redux";
-import { activateUser, getUsers, getProductsFiltered, getCarrito } from "./actions/postActions";
-import io from "socket.io-client";
+import { getUsers, getProductsFiltered, getCarrito } from "./actions/postActions";
 import CreatableSelect from "react-select";
 import axios from "axios";
 import "./css/users.css";
@@ -175,4 +173,4 @@ const mapStateToProps = state => ({
   currentUser: state.posts.currentUser.decode,
 });
 
-export default connect(mapStateToProps, { activateUser, getUsers, getProductsFiltered, getCarrito  })(Agregar);
+export default connect(mapStateToProps, { getUsers, getProductsFiltered, getCarrito  })(Agregar);

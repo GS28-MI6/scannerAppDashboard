@@ -1,12 +1,7 @@
 import React, { Component } from "react";
-import SwitchComponent from "./SwitchComponent";
-import SwitchComponentPerimetral from "./SwitchComponentPerimetral";
-import dateFormat from "dateformat";
-import axios from "axios";
 import { connect } from "react-redux";
 import { cantidadChange, erraseItem } from "./actions/postActions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { confirmAlert } from 'react-confirm-alert';
 import './react-confirm.css'; 
 import "./css/users.css";
 

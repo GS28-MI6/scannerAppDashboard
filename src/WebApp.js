@@ -1,10 +1,6 @@
 import React, { Component, useState } from "react";
-import UserItem from "./UserItem";
 import { connect } from "react-redux";
-import { activateUser, getUsers, getProductsFiltered, getCarrito, postVenta} from "./actions/postActions";
-import io from "socket.io-client";
-import CreatableSelect from "react-select";
-import axios from "axios";
+import { getUsers, getProductsFiltered, getCarrito, postVenta} from "./actions/postActions";
 import Ventas from "./Ventas.js";
 import Agregar from "./Agregar.js";
 import "./css/users.css";
@@ -78,4 +74,4 @@ const mapStateToProps = state => ({
   total: state.posts.total
 });
 
-export default connect(mapStateToProps, { activateUser, getUsers, getProductsFiltered, getCarrito, postVenta})(UserList);
+export default connect(mapStateToProps, { getUsers, getProductsFiltered, getCarrito, postVenta})(UserList);

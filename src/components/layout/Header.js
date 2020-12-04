@@ -2,22 +2,15 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { useHistory } from "react-router-dom";
 import {
-  validateUser,
-  usersNotification,
-  countAlerts
+  validateUser
 } from "../../actions/postActions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
-import io from "socket.io-client";
 import "./header.css";
 
 library.add(fas, fab);
-
-const socket = io("http://18.230.143.84:4000", {
-  transports: ["websocket", "polling"]
-});
 
 function logOut() {
   localStorage.removeItem("token");
@@ -28,25 +21,11 @@ function logOut() {
 class Header extends Component {
   constructor(props) {
     super(props);
-    // this.notifyUser = new EventSource("http://18.230.143.84:4000/events_users");
     this.props.validateUser();
-    this.props.usersNotification();
   }
 
-  componentDidMount() {
-    // this.notifyUser.onmessage = event => {
-    //   this.props.usersNotification()
-    //   console.log("notifyUser")
-    // };
-    socket.on("usuario_registrado", datosAlerta => {
-      console.log("usuario fking registrado!!!!!!");
-      console.log(datosAlerta);
-      this.props.usersNotification();
-    });
-  }
 
   render() {
-    var { counted_users } = this.props.pendingUsers;
     if (this.props.currentUser !== undefined) {
       var { email, usuario } = this.props.currentUser;
       return (
@@ -150,6 +129,6 @@ const mapStateToProps = state => ({
   pendingUsers: state.posts.pendingUsers
 });
 
-export default connect(mapStateToProps, { validateUser, usersNotification })(
+export default connect(mapStateToProps, { validateUser })(
   Header
 );

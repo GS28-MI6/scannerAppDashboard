@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import UserItem from "./UserItem";
 import { connect } from "react-redux";
-import { activateUser, getUsers, getProductsFiltered } from "./actions/postActions";
+import { getUsers, getProductsFiltered } from "./actions/postActions";
 import CreatableSelect from "react-select";
 import "./css/users.css";
 import "./css/stadistics.css";
@@ -111,4 +111,4 @@ const mapStateToProps = state => ({
   currentUser: state.posts.currentUser.decode,
 });
 
-export default connect(mapStateToProps, { activateUser, getUsers, getProductsFiltered })(Productos);
+export default connect(mapStateToProps, { getUsers, getProductsFiltered })(Productos);
