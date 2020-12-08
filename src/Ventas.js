@@ -30,6 +30,7 @@ class Ventas extends Component {
       value: "Pan",
       label: "Pan",
     },
+    disabled: false,
   };
 
   constructor(props) {
@@ -179,12 +180,13 @@ class Ventas extends Component {
     console.error(err);
   }
 
-  confirmarVenta() {
+  confirmarVenta(ref) {
     // var totalObj = { total: this.props.total}
     this.props.postVenta(
       this.props.carrito,
       this.props.total,
-      this.props.currentUser.id_cliente
+      this.props.currentUser.id_cliente,
+      this.refs.btn,
     );
   }
 
@@ -295,7 +297,12 @@ class Ventas extends Component {
           </div>
           <button
             type="button"
-            onClick={() => this.confirmarVenta()}
+            ref="btn"
+            onClick={() => {
+              this.refs.btn.setAttribute("disabled", "disabled");
+              this.confirmarVenta()
+              console.log("clicked")
+            }}
             className="submitDireccion"
           >
             {" "}

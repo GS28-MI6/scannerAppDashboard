@@ -144,7 +144,7 @@ export const erraseItem = (carrito, barcode, precio) => dispatch =>{
   })
 }
 
-export const postVenta = (items, totalObj, id_cliente) => dispatch =>{
+export const postVenta = (items, totalObj, id_cliente, btn) => dispatch =>{
 
   var total = {total:totalObj}
   if (totalObj !== 0.00) {
@@ -162,6 +162,7 @@ export const postVenta = (items, totalObj, id_cliente) => dispatch =>{
           type: FETCH_TOTAL,
           payload: totalObj
         })
+        btn.removeAttribute("disabled")
         alert("Venta realizada")
       })
       .catch((err) => alert(err))

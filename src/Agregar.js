@@ -145,7 +145,13 @@ class Agregar extends Component {
         <div className="ingresos">
           <div className="formIngresos">
                   <h2>Codigo de barras:</h2>
-                  <input type="text" className=" css-yk16xz-control inputIngreso" id="barcodeInput"></input>
+                  <div style={{ width:"100%", display:"flex", flexDirection:"row" }}>
+                  <input type="text" className=" css-yk16xz-control inputIngreso" style={{width:"70%"}} id="barcodeInput"></input>
+                  <button type="button" style={{width:"20%"}} onClick={() => {
+                    var barcodeInput = document.getElementById("barcodeInput")
+                    this.handleScan(barcodeInput.value)
+                    }} className="inputIngreso"> Buscar </button>
+                  </div>
                   <h2>Producto:</h2>
                   <input type="text" className=" css-yk16xz-control inputIngreso" id="productoInput"></input>
                   <h2>Precio:</h2>
