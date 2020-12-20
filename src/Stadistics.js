@@ -43,6 +43,7 @@ class Stadistics extends Component {
           y: datos[i].total_venta
         });
       }
+      chart.render();
       chartKey = Math.random()
     });
   }
@@ -59,6 +60,8 @@ class Stadistics extends Component {
   render() {
 
     const optionsLinear = {
+      animationEnabled: true,
+      animationDuration: 2000,
 			theme: "light2",
 			title: {
 				text: "Graficos de ventas"
