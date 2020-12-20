@@ -6,60 +6,45 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { connect } from "react-redux";
 import { CircleProgress } from "react-gradient-progress";
+import jwtDecode from "jwt-decode";
 import cx from "classnames";
 import CanvasJSReact from "./canvasjs.react"
 import "./css/stadistics.css";
 
 library.add(fas, fab);
 
-const options = [
-  { value: "Accidente Vial", label: "Accidente Vial"},
-  { value: "Bomberos", label: "Bomberos"},
-  { value: "Disturbios", label: "Distubios"},
-  { value: "General", label: "General"},
-  { value: "Robo", label: "Robo"},
-  { value: "Salud", label: "Salud"},
-  { value: "Violencia de Género", label: "Violencia de Género"}
-];
-
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 var dataPoints =[];
+let chartKey = Math.random()
 
 class Stadistics extends Component {
   constructor(props) {
-    super(props);
-    var heightHolder = window.innerHeight - 50;
-    this.stateHeight = {
-      height: window.innerHeight,
-      heightHolder: heightHolder
-    };
+    super(props)
     this.handleChange = this.handleChange.bind(this)
-    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
   }
   componentDidMount() {
-    window.addEventListener("resize", this.updateWindowDimensions);
+    const token = localStorage.token;
+    let decode = jwtDecode(token);
+    const { id_cliente } = decode;
     var chart = this.chart;
-    axios.post('http://177.71.157.129:4000/countFiltered')
+    axios.post('http://177.71.157.129:4000/countFiltered', {id_cliente})
     .then(function(data) {
       console.log(data.data)
-      var datos = data.data
-      for (var i = 0; i < datos.length; i++) {
-        var fecha = datos[i].fecha_venta.split('T')[0]
-        var año = fecha.split('-')[0]
-        var mes = fecha.split('-')[1]
-        var dia = fecha.split('-')[2]
+      let datos = data.data
+      for (let i = 0; i < datos.length; i++) {
+        let fecha = datos[i].fecha_venta.split('T')[0]
+        let año = fecha.split('-')[0]
+        let mes = fecha.split('-')[1]
+        let dia = fecha.split('-')[2]
         console.log(fecha, año, mes, dia)
         dataPoints.push({
           x: new Date(fecha + "T00:00:00"), // sin eso me tiraria un mes adicional because reasons
           y: datos[i].total_venta
         });
       }
+      chartKey = Math.random()
     });
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("resize", this.updateWindowDimensions);
   }
 
   handleChange(e) {
@@ -70,21 +55,13 @@ class Stadistics extends Component {
     }})
   }
 
-  updateWindowDimensions() {
-    var heightHolder = window.innerHeight - 50;
-    this.stateheight = {
-      height: window.innerHeight,
-      heightHolder: heightHolder
-    };
-  }
-  
 
   render() {
 
     const optionsLinear = {
 			theme: "light2",
 			title: {
-				text: "Graficos de categorias"
+				text: "Graficos de ventas"
 			},
 			axisY: {
 				title: "Cantidad",
@@ -109,7 +86,8 @@ class Stadistics extends Component {
     )
       return (
         <div className={graphLinear}>
-            <CanvasJSChart options = {optionsLinear} 
+            <CanvasJSChart options = {optionsLinear}
+            key={chartKey}
             onRef={ref => this.chart = ref}
             />
         </div>
