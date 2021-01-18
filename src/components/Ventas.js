@@ -7,21 +7,21 @@ import {
   postVenta,
   cantidadChange,
   erraseItem,
-} from "./actions/postActions";
+} from "../actions/postActions";
 import CreatableSelect from "react-select";
 import { confirmAlert } from "react-confirm-alert";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./react-confirm.css";
+import "../css/react-confirm.css";
 import axios from "axios";
-import "./css/users.css";
-import "./css/stadistics.css";
+import "../css/users.css";
+import "../css/stadistics.css";
 import BarcodeReader from "react-barcode-reader";
 
 const options = [
-  { value: "Pan", label: "Pan"},
-  { value: "Fiambre", label: "Fiambre"},
-  { value: "Rotiseria", label: "Rotiseria"},
-  { value: "Otros", label: "Otros"},
+  { value: "Pan", label: "Pan" },
+  { value: "Fiambre", label: "Fiambre" },
+  { value: "Rotiseria", label: "Rotiseria" },
+  { value: "Otros", label: "Otros" },
 ];
 
 class Ventas extends Component {
@@ -49,7 +49,7 @@ class Ventas extends Component {
   submit = () => {
     confirmAlert({
       customUI: ({ onClose }) => {
-        let barcode = Math.round(Math.random() * 100000000)
+        let barcode = Math.round(Math.random() * 100000000);
         return (
           <div className="custom-ui">
             <h1 className="tituloFiltros">Agregar un producto</h1>
@@ -73,7 +73,7 @@ class Ventas extends Component {
             <button
               type="button"
               onClick={() => {
-                barcode = Math.round(Math.random() * 100000000)
+                barcode = Math.round(Math.random() * 100000000);
                 this.submitForm(barcode);
                 onClose();
               }}
@@ -186,7 +186,7 @@ class Ventas extends Component {
       this.props.carrito,
       this.props.total,
       this.props.currentUser.id_cliente,
-      this.refs.btn,
+      this.refs.btn
     );
   }
 
@@ -300,8 +300,8 @@ class Ventas extends Component {
             ref="btn"
             onClick={() => {
               this.refs.btn.setAttribute("disabled", "disabled");
-              this.confirmarVenta()
-              console.log("clicked")
+              this.confirmarVenta();
+              console.log("clicked");
             }}
             className="submitDireccion"
           >

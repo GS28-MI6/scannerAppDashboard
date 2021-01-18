@@ -5,12 +5,12 @@ import {
   Redirect,
   Switch,
 } from "react-router-dom";
-import Header from "./components/layout/Header";
-import Login from "./login";
-import Stadistics from "./Stadistics";
-import UserList from "./UserList";
+import Header from "./components/Header";
+import Login from "./components/login";
+import Stadistics from "./components/Stadistics";
+import UserList from "./components/UserList";
 // eslint-disable-next-line no-unused-vars
-import "./App.css";
+import "./css/App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
 import { library } from "@fortawesome/fontawesome-svg-core";
@@ -20,8 +20,8 @@ import store from "./store";
 import { connect } from "react-redux";
 import io from "socket.io-client";
 import jwtDecode from "jwt-decode";
-import Ventas from "./Ventas";
-import Agregar from "./Agregar";
+import Ventas from "./components/Ventas";
+import Agregar from "./components/Agregar";
 
 library.add(fas, fab);
 

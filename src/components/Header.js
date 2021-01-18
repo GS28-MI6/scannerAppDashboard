@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
-import { validateUser } from "../../actions/postActions";
+import { Link } from "react-router-dom";
+import { validateUser } from "../actions/postActions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
-import "./header.css";
+import "../css/header.css";
 import { Nav, Navbar } from "react-bootstrap";
 
 library.add(fas, fab);

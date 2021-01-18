@@ -6,8 +6,8 @@ import { fab } from "@fortawesome/free-brands-svg-icons";
 import { Container, Card, Alert, Button, Form } from "react-bootstrap";
 
 //import Logo from "../img/logoTitulo.png";
-import { userLoginPost } from "./actions/postActions";
-import "./css/login.css";
+import { userLoginPost } from "../actions/postActions";
+import "../css/login.css";
 
 library.add(fas, fab);
 

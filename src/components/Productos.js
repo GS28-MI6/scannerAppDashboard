@@ -1,20 +1,20 @@
 import React, { Component } from "react";
 import UserItem from "./UserItem";
 import { connect } from "react-redux";
-import { getUsers, getProductsFiltered } from "./actions/postActions";
+import { getUsers, getProductsFiltered } from "../actions/postActions";
 import CreatableSelect from "react-select";
-import "./css/users.css";
-import "./css/stadistics.css";
+import "../css/users.css";
+import "../css/stadistics.css";
 
 const options = [
-  { value: "Comestibles", label: "Comestibles"},
-  { value: "Galletitas", label: "Galletitas"},
-  { value: "Infusiones", label: "Infusiones"},
-  { value: "Lacteos", label: "Lacteos"},
-  { value: "Limpieza", label: "Limpieza"},
-  { value: "Bebidas con alcohol", label: "Bebidas con alcohol"},
-  { value: "Bebidas sin alcohol", label: "Bebidas sin alcohol"},
-  { value: "Golosinas", label: "Golosinas"}
+  { value: "Comestibles", label: "Comestibles" },
+  { value: "Galletitas", label: "Galletitas" },
+  { value: "Infusiones", label: "Infusiones" },
+  { value: "Lacteos", label: "Lacteos" },
+  { value: "Limpieza", label: "Limpieza" },
+  { value: "Bebidas con alcohol", label: "Bebidas con alcohol" },
+  { value: "Bebidas sin alcohol", label: "Bebidas sin alcohol" },
+  { value: "Golosinas", label: "Golosinas" },
 ];
 
 class Productos extends Component {
@@ -24,15 +24,15 @@ class Productos extends Component {
     var heightHolder = window.innerHeight - 50;
     this.stateHeight = {
       height: window.innerHeight,
-      heightHolder: heightHolder
+      heightHolder: heightHolder,
     };
     this.props.getUsers();
-    this.state ={
+    this.state = {
       selectedOption: {
         value: "",
-        label: "Seleccione una categoria..."
-      }
-    }
+        label: "Seleccione una categoria...",
+      },
+    };
     this.submitForm = this.submitForm.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
@@ -48,23 +48,29 @@ class Productos extends Component {
     var heightHolder = window.innerHeight - 50;
     this.stateheight = {
       height: window.innerHeight,
-      heightHolder: heightHolder
+      heightHolder: heightHolder,
     };
   }
 
   handleChange(e) {
     console.log(e);
     console.log(this.state.selectedOption);
-    this.setState({selectedOption : {
-      value: e.value,
-      label: e.label
-    }})
+    this.setState({
+      selectedOption: {
+        value: e.value,
+        label: e.label,
+      },
+    });
   }
 
   submitForm() {
-    var nombre = document.getElementById("dateFrom").value
-    var tipo = this.state.selectedOption.value
-    this.props.getProductsFiltered(nombre, tipo, this.props.currentUser.id_cliente)
+    var nombre = document.getElementById("dateFrom").value;
+    var tipo = this.state.selectedOption.value;
+    this.props.getProductsFiltered(
+      nombre,
+      tipo,
+      this.props.currentUser.id_cliente
+    );
   }
 
   render() {
@@ -77,13 +83,20 @@ class Productos extends Component {
             <input type="text" className=" input_venta" id="dateFrom"></input>
             <h2>Categoria:</h2>
             <CreatableSelect
-            value={this.state.selectedOption.value}
-            placeholder= {this.state.selectedOption.label}
-            onChange={e => this.handleChange(e)}
-            options={options}
+              value={this.state.selectedOption.value}
+              placeholder={this.state.selectedOption.label}
+              onChange={(e) => this.handleChange(e)}
+              options={options}
             />
           </div>
-            <button type="button" onClick={() => this.submitForm()} className="submitDireccion"> Filtrar </button>
+          <button
+            type="button"
+            onClick={() => this.submitForm()}
+            className="submitDireccion"
+          >
+            {" "}
+            Filtrar{" "}
+          </button>
         </div>
         <div className="heighter">
           <table className="table-container">
@@ -95,7 +108,7 @@ class Productos extends Component {
               <th className="N">Categoria</th>
             </tr>
             <div className="scroller">
-              {this.props.users.map(function(user, idx) {
+              {this.props.users.map(function (user, idx) {
                 return <UserItem key={idx} user={user} />;
               }, this)}
             </div>
@@ -106,9 +119,11 @@ class Productos extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   users: state.posts.users,
   currentUser: state.posts.currentUser.decode,
 });
 
-export default connect(mapStateToProps, { getUsers, getProductsFiltered })(Productos);
+export default connect(mapStateToProps, { getUsers, getProductsFiltered })(
+  Productos
+);

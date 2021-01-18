@@ -5,7 +5,7 @@ import {
   getProductsFiltered,
   getCarrito,
   postVenta,
-} from "./actions/postActions";
+} from "../actions/postActions";
 import Ventas from "./Ventas.js";
 import Agregar from "./Agregar.js";
 import "./css/users.css";
