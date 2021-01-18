@@ -1,14 +1,13 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { useHistory } from "react-router-dom";
-import {
-  validateUser
-} from "../../actions/postActions";
+import { Link, useHistory } from "react-router-dom";
+import { validateUser } from "../../actions/postActions";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import "./header.css";
+import { Nav, Navbar } from "react-bootstrap";
 
 library.add(fas, fab);
 
@@ -24,111 +23,67 @@ class Header extends Component {
     this.props.validateUser();
   }
 
-
   render() {
-    if (this.props.currentUser !== undefined) {
-      var { email, usuario } = this.props.currentUser;
-      return (
-        <header className="header">
-          <div className="links">
-            <div
-              className="button"
-              onClick={() => {
-                window.location.href = "/";
-              }}
-            >
-              <FontAwesomeIcon
-                icon="home"
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  color: "white"
-                }}
-              />{" "}
-              Inicio
-            </div>
-            <div
-              className="button"
-              onClick={() => {
-                window.open('/stadistics', '_blank');
-              }}
-            >
-              <FontAwesomeIcon
-                icon="chart-bar"
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  color: "white"
-                }}
-              />
-              Graficos
-            </div>
-            <div
-              className="button notiBtn"
-              onClick={() => {
-                window.open('/lists/productos', '_blank');
-              }}
-            >
-              <div className="notification">
-                <FontAwesomeIcon
-                  icon="bell"
-                  style={{
-                    display: "flex",
-                    flexDirection: "row",
-                    color: "white"
-                  }}
-                />{" "}
-                Productos
-              </div>{" "}
-            </div>
-          </div>
-          <div className="info">
-            <div className="userInfo">
-              <h3>{email}</h3>
-              <h3>{usuario}</h3>
-            </div>
-            <div className="logOut" onClick={() => logOut()}>
-              <div>
-                <FontAwesomeIcon
-                  icon="power-off"
-                  style={{ display: "flex", flexDirection: "row" }}
-                />
-              </div>
-              <h3>Salir</h3>
-            </div>
-          </div>
-        </header>
-      );
-    } else {
-      return (
-        <header
-          className="header"
-          style={{ padding: "0 10px", fontSize: "20px" }}
-        >
-          {" "}
-          Login
-        </header>
-      );
-    }
+    return (
+      <Navbar
+        className="sticky-top"
+        bg="dark"
+        variant="dark"
+        style={{ height: "5vh" }}
+      >
+        <Navbar.Brand className="align-items-center">My Business</Navbar.Brand>
+        {this.props.currentUser && (
+          <>
+            <Nav className="mr-auto align-items-center">
+              <Link to="/" className="d-flex align-items-center ml-4 nav-link">
+                <FontAwesomeIcon icon="cash-register" className="mr-2" />
+                Realizar Venta
+              </Link>
+              <Link
+                to="/ingreso"
+                className="d-flex align-items-center ml-4 nav-link"
+              >
+                <FontAwesomeIcon icon="plus" className="mr-2" />
+                Añadir Producto
+              </Link>
+              <Link
+                to="/stadistics"
+                className="d-flex align-items-center ml-4 nav-link"
+              >
+                <FontAwesomeIcon icon="chart-bar" className="mr-2" />
+                Estadística
+              </Link>
+              <Link
+                to="/lists/productos"
+                className="d-flex align-items-center ml-4 nav-link"
+              >
+                <FontAwesomeIcon icon="list" className="mr-2" />
+                Lista de Productos
+              </Link>
+            </Nav>
+            <Nav>
+              <Navbar.Text className="mr-4">
+                Usuario: {this.props.currentUser.usuario}
+              </Navbar.Text>
+              <a
+                onClick={() => logOut()}
+                style={{ cursor: "pointer" }}
+                className="d-flex align-items-center"
+              >
+                Salir
+                <FontAwesomeIcon icon="sign-out-alt" className="ml-2" />
+              </a>
+            </Nav>
+          </>
+        )}
+      </Navbar>
+    );
   }
 }
 
-// const headerStyle = {
-//   display: "flex",
-//   width: "100%",
-//   height: "50px",
-//   background: "#3fb0ac",
-//   color: "#fff",
-//   justifyContent: "flex-end",
-//   alignItems: "center",
-//   padding: "0 10px"
-// };
-
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   currentUser: state.posts.currentUser.decode,
-  pendingUsers: state.posts.pendingUsers
+  pendingUsers: state.posts.pendingUsers,
 });
 
-export default connect(mapStateToProps, { validateUser })(
-  Header
-);
+export default connect(mapStateToProps, { validateUser })(Header);

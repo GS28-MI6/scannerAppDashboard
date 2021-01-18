@@ -1,121 +1,97 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {userLoginPost} from './actions/postActions';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React, { Component } from "react";
+import { connect } from "react-redux";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
-import cx from "classnames";
-import "./login.css"
+import { Container, Card, Alert, Button, Form } from "react-bootstrap";
+
+//import Logo from "../img/logoTitulo.png";
+import { userLoginPost } from "./actions/postActions";
+import "./css/login.css";
 
 library.add(fas, fab);
 
 class Login extends Component {
   state = {
-    email: "",
+    user: "",
     password: "",
-    url: window.location.pathname
-  }
+    url: window.location.pathname,
+  };
 
-  constructor(props) {
-    super(props);
-    var heightHolder = window.innerHeight - 50;
-    this.stateHeight = {
-      height: window.innerHeight,
-      heightHolder: heightHolder
-    };
-    this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
-  }
-
-  componentDidMount() {
-    this.updateWindowDimensions();
-    window.addEventListener("resize", this.updateWindowDimensions);
-   }
-
-   componentWillUnmount() {
-    window.removeEventListener("resize", this.updateWindowDimensions);
-  }
-
-  updateWindowDimensions() {
-    var heightHolder = window.innerHeight - 50;
-    this.stateheight = {
-      height: window.innerHeight,
-      heightHolder: heightHolder
-    };
-  }
-
-
-  handleChange = event => {
+  handleChange = (event) => {
     this.setState({
-      [event.target.name]: event.target.value
+      [event.target.name]: event.target.value,
     });
-  }
+  };
 
-  handleSubmit = event => {
-    const url = window.location.pathname;
-    console.log(url)
-    event.preventDefault()
-    this.props.userLoginPost(this.state)
-  }
+  handleSubmit = (event) => {
+    event.preventDefault();
+    this.props.userLoginPost(this.state);
+  };
 
   render() {
-
-    const errNotification = cx('errNotification', {
-      'hide' : this.props.loginErr.error === undefined
-    })
-
     return (
-      <div>
-        <div className={errNotification}>
-          <h1>Hubo un error al iniciar sesión</h1>
-        </div>
-        <div className="container" style={{ height: this.stateHeight.heightHolder }}>
-            <div className="loginForm">
-                <form onSubmit={this.handleSubmit}>
-                    <div className="formContainerLogin">
-                        <h1>Iniciar sesión</h1>
-                        <div className="dataAreas">
-                            <div className="faIcon">
-                                <FontAwesomeIcon icon="user" style={{display:'flex', flexDirection: 'row'}}/>
-                            </div>
-                            <input
-                                name='email'
-                                placeholder='Email'
-                                className="dataInput"
-                                value={this.state.email}
-                                onChange={this.handleChange}
-                                />
-                        </div>
-                        <div className="dataAreas">
-                            <div className="faIcon">
-                                <FontAwesomeIcon icon="key" style={{display:'flex', flexDirection: 'row'}}/>
-                            </div>
-                            <input
-                                type='password'
-                                name='password'
-                                className="dataInput"
-                                placeholder='Contraseña'
-                                value={this.state.password}
-                                onChange={this.handleChange}
-                                />
-                        </div>
-
-                        <input className="submit" type='submit' value="iniciar sesión"/>
-                    </div>
-                </form>
+      <div style={{ height: "95vh" }}>
+        <Container className="d-flex justify-content-center">
+          <Card className="p-5 my-5 w-50">
+            {!this.props.loginErr.error && (
+              <Alert variant="danger">Usuario y/o contraseña inválido/s</Alert>
+            )}
+            {/*<div className="text-center">
+              <img class="mb-5" src={Logo} alt="Ciudad Segura" width="150" />
+            </div>*/}
+            <h2 class="mb-5 font-weight-normal text-center">Iniciar sesión</h2>
+            <div className="d-flex justify-content-center w-100">
+              <Form onSubmit={this.handleSubmit} className="w-100">
+                <Form.Group controlId="formBasicUser">
+                  <Form.Label>Usuario</Form.Label>
+                  <Form.Control
+                    type="text"
+                    id="inputUser"
+                    name="email"
+                    className="form-control mb-3"
+                    placeholder="Usuario"
+                    value={this.state.email}
+                    onChange={this.handleChange}
+                  />
+                </Form.Group>
+                <Form.Group controlId="formBasicPassword">
+                  <Form.Label>Contraseña</Form.Label>
+                  <Form.Control
+                    type="password"
+                    id="inputPassword"
+                    name="password"
+                    className="form-control mb-3"
+                    placeholder="Contraseña"
+                    value={this.state.password}
+                    onChange={this.handleChange}
+                  />
+                </Form.Group>
+                <div className="text-center">
+                  <Button
+                    type="submit"
+                    value="iniciar sesión"
+                    variant="outline-primary"
+                    className="w-50"
+                  >
+                    Ingresar
+                  </Button>
+                </div>
+              </Form>
             </div>
-        </div>
+          </Card>
+        </Container>
       </div>
-    )
+    );
   }
 }
 
-const mapStateToProps = state => ({
-  loginErr: state.posts.loginErr
-})
+const mapStateToProps = (state) => ({
+  loginErr: state.posts.loginErr,
+});
 
-const mapDispatchToProps = dispatch => ({
-  userLoginPost: userInfo => dispatch(userLoginPost(userInfo))
-})
+const mapDispatchToProps = (dispatch) => ({
+  userLoginPost: (userInfo) => dispatch(userLoginPost(userInfo)),
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

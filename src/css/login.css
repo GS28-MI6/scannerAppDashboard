@@ -1,0 +1,76 @@
+@media screen and (max-width: 901px) {
+  .card {
+    width: 100% !important;
+  }
+}
+
+/*form {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.errNotification {
+  margin-top: 5rem;
+  text-align: center;
+}
+.loginForm {
+  display: flex;
+  width: 30%;
+  height: 40%;
+  border: 2px solid #0da6ff;
+  background: #ffffff;
+  border-radius: 5px;
+  justify-content: space-around;
+  align-content: center;
+}
+.formContainerLogin {
+  box-sizing: border-box;
+  width: 90%;
+  height: 90%;
+  margin: 1%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.dataAreas {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  height: 40px;
+  margin-right: 5%;
+  margin-left: 5%;
+  width: 90%;
+}
+.faIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-left: 5px;
+  padding-right: 5px;
+  height: 40px;
+  border: 1px solid grey;
+  border-right: 0;
+  border-radius: 2px 0px 0px 2px;
+  color: #0da6ff;
+}
+.dataInput {
+  height: 40px;
+  width: 100%;
+  padding-left: 2.5%;
+  border: 1px solid grey;
+  border-radius: 0px 2px 2px 0px;
+}
+
+.submit {
+  margin-top: 10px;
+  height: 40px;
+  width: 25%;
+  background-color: #0da6ff;
+  border-color: #ffffff;
+  border-radius: 5px;
+  font-weight: bold;
+}*/
