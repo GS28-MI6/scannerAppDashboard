@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import axios from "axios";
-import { confirmAlert } from "react-confirm-alert";
 import "../css/react-confirm.css";
 import "../css/users.css";
 

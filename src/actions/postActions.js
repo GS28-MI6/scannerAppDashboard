@@ -107,8 +107,8 @@ export const getCarrito = (carrito, barcode, nombre, precio, stock) => dispatch 
   });
   var sumaTotal = 0
   console.log(carrito)
-  carrito.map(function(item){
-    var precio = parseFloat(item.precio) * parseInt(item.cantidad)
+  carrito.map((item) => {
+    let precio = parseFloat(item.precio) * parseInt(item.cantidad)
     console.log(precio)
     sumaTotal = parseFloat(sumaTotal) + parseFloat(precio)
     sumaTotal = parseFloat(sumaTotal).toFixed(2)
@@ -130,7 +130,7 @@ export const erraseItem = (carrito, barcode, precio) => dispatch =>{
   });
   var sumaTotal = 0
   console.log(carrito)
-  aux.map(function(item){
+  aux.map((item) => {
     var precio = parseFloat(item.precio) * parseInt(item.cantidad)
     console.log(precio)
     sumaTotal = parseFloat(sumaTotal) + parseFloat(precio)
@@ -173,17 +173,18 @@ export const postVenta = (items, totalObj, id_cliente, btn) => dispatch =>{
 
 
 export const cantidadChange = (items, barcode, cantidad) => dispatch =>{
-  var array = []
-  var sumaTotal = 0
+  let array = []
+  let sumaTotal = 0
+  let precio
   array = items.map(function(item){
     if (item.barcode === barcode){
       item.cantidad = cantidad
-      var precio = parseFloat(item.precio) * parseInt(item.cantidad)
+      precio = parseFloat(item.precio) * parseInt(item.cantidad)
       sumaTotal = parseFloat(sumaTotal) + parseFloat(precio)
       sumaTotal = parseFloat(sumaTotal).toFixed(2)
       return item
     } else {
-      var precio = parseFloat(item.precio) * parseInt(item.cantidad)
+      precio = parseFloat(item.precio) * parseInt(item.cantidad)
       sumaTotal = parseFloat(sumaTotal) + parseFloat(precio)
       sumaTotal = parseFloat(sumaTotal).toFixed(2)
       return item

@@ -75,44 +75,49 @@ class Productos extends Component {
 
   render() {
     return (
-      <div className="tabla">
-        <h2>Filtrado de Productos</h2>
-        <div className="productos">
-          <div className="formContainer">
-            <h2>Nombre:</h2>
-            <input type="text" className=" input_venta" id="dateFrom"></input>
-            <h2>Categoria:</h2>
-            <CreatableSelect
-              value={this.state.selectedOption.value}
-              placeholder={this.state.selectedOption.label}
-              onChange={(e) => this.handleChange(e)}
-              options={options}
-            />
-          </div>
-          <button
-            type="button"
-            onClick={() => this.submitForm()}
-            className="submitDireccion"
-          >
-            {" "}
-            Filtrar{" "}
-          </button>
-        </div>
-        <div className="heighter">
-          <table className="table-container">
-            <tr className="table-row initial">
-              <th className="N">Barcode</th>
-              <th className="XG">Nombre</th>
-              <th className="S">Precio</th>
-              <th className="S">Stock</th>
-              <th className="N">Categoria</th>
-            </tr>
-            <div className="scroller">
-              {this.props.users.map(function (user, idx) {
-                return <UserItem key={idx} user={user} />;
-              }, this)}
+      <div
+      className="usersContainer"
+      style={{height:"95vh"}}
+      >
+        <div className="tabla">
+          <h2>Filtrado de Productos</h2>
+          <div className="productos">
+            <div className="formContainer">
+              <h2>Nombre:</h2>
+              <input type="text" className=" input_venta" id="dateFrom"></input>
+              <h2>Categoria:</h2>
+              <CreatableSelect
+                value={this.state.selectedOption.value}
+                placeholder={this.state.selectedOption.label}
+                onChange={(e) => this.handleChange(e)}
+                options={options}
+              />
             </div>
-          </table>
+            <button
+              type="button"
+              onClick={() => this.submitForm()}
+              className="submitDireccion"
+            >
+              {" "}
+              Filtrar{" "}
+            </button>
+          </div>
+          <div className="heighter">
+            <table className="table-container">
+              <tr className="table-row initial">
+                <th className="N">Barcode</th>
+                <th className="XG">Nombre</th>
+                <th className="S">Precio</th>
+                <th className="S">Stock</th>
+                <th className="N">Categoria</th>
+              </tr>
+              <div className="scroller">
+                {this.props.users.map(function (user, idx) {
+                  return <UserItem key={idx} user={user} />;
+                }, this)}
+              </div>
+            </table>
+          </div>
         </div>
       </div>
     );

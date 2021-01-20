@@ -88,6 +88,54 @@ class Ventas extends Component {
     });
   };
 
+  isEmpty = () => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui" onClick={
+            this.refs.btn.removeAttribute("disabled")
+          }>
+            <h2 className="catTitle">Porfavor agregue un producto</h2>
+            <button
+              type="button"
+              onClick={() => {
+                this.refs.btn.removeAttribute("disabled")
+                onClose();
+              }}
+              className="buttonAlert"
+            >
+              {" "}
+              Ok{" "}
+            </button>
+          </div>
+        );
+      },
+    });
+  };
+  productDoesntExists = () => {
+    confirmAlert({
+      customUI: ({ onClose }) => {
+        return (
+          <div className="custom-ui" onClick={
+            this.refs.btn.removeAttribute("disabled")
+          }>
+            <h2 className="catTitle">El producto no se encuentra cargado</h2>
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+              }}
+              className="buttonAlert"
+            >
+              {" "}
+              Ok{" "}
+            </button>
+          </div>
+        );
+      },
+    });
+  };
+
   handleChange(e) {
     this.state.selectedOption = e;
     this.setState({
@@ -130,9 +178,9 @@ class Ventas extends Component {
       .then((response) => {
         console.log(response);
         if (response.data[0] !== undefined) {
-          var { nombre, precio, stock } = response.data[0];
-          var precio = parseFloat(precio).toFixed(2);
-          var stock = stock.toString();
+          let { nombre, precio, stock } = response.data[0];
+          precio = parseFloat(precio).toFixed(2);
+          stock = stock.toString();
           if (nombre !== null) {
             this.props.getCarrito(
               this.props.carrito,
@@ -143,7 +191,7 @@ class Ventas extends Component {
             );
           }
         } else {
-          alert("No se ha encontrado ningun producto");
+          this.productDoesntExists()
         }
       })
       .catch((err) => {
@@ -159,21 +207,25 @@ class Ventas extends Component {
       .post("http://177.71.157.129:4000/item", { barcode, id_cliente })
       .then((response) => {
         console.log(response);
-        var { nombre, precio, stock } = response.data[0];
-        var precio = parseFloat(precio).toFixed(2);
-        var stock = stock.toString();
-        if (nombre !== null) {
-          this.props.getCarrito(
-            this.props.carrito,
-            barcode,
-            nombre,
-            precio,
-            stock
-          );
+        if (response.data[0] !== undefined) {
+          let { nombre, precio, stock } = response.data[0];
+          precio = parseFloat(precio).toFixed(2);
+          stock = stock.toString();
+          if (nombre !== null) {
+            this.props.getCarrito(
+              this.props.carrito,
+              barcode,
+              nombre,
+              precio,
+              stock
+            );
+          }
+        } else {
+          this.productDoesntExists()
         }
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err)
       });
   }
   handleError(err) {
@@ -181,13 +233,16 @@ class Ventas extends Component {
   }
 
   confirmarVenta(ref) {
-    // var totalObj = { total: this.props.total}
-    this.props.postVenta(
-      this.props.carrito,
-      this.props.total,
-      this.props.currentUser.id_cliente,
-      this.refs.btn
-    );
+    if(this.props.carrito[0]){
+      this.props.postVenta(
+        this.props.carrito,
+        this.props.total,
+        this.props.currentUser.id_cliente,
+        this.refs.btn
+      );
+    }else{
+      this.isEmpty()
+    }
   }
 
   changeCantidad(type, cantidad, barcode) {

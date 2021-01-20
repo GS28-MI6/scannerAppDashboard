@@ -8,7 +8,6 @@ import {
 import Header from "./components/Header";
 import Login from "./components/login";
 import Stadistics from "./components/Stadistics";
-import UserList from "./components/UserList";
 // eslint-disable-next-line no-unused-vars
 import "./css/App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -22,6 +21,7 @@ import io from "socket.io-client";
 import jwtDecode from "jwt-decode";
 import Ventas from "./components/Ventas";
 import Agregar from "./components/Agregar";
+import Productos from "./components/Productos";
 
 library.add(fas, fab);
 
@@ -71,7 +71,7 @@ class App extends Component {
               <PrivateRoute
                 exact
                 path="/lists/productos"
-                component={UserList}
+                component={Productos}
               />
               <Route exact path="/login" component={Login} />
             </Switch>
