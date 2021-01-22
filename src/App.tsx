@@ -22,46 +22,46 @@ import Agregar from "./components/Agregar";
 
 library.add(fas, fab);
 
-const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Route
-    {...rest}
-    render={(props) =>
-      localStorage.token ? (
-        <Component {...props} />
-      ) : (
-        <Redirect
-          to={{
-            pathname: "/login",
-            state: { from: props.location },
-          }}
-        />
-      )
-    }
-  />
-);
-
-class App extends Component {
-  render() {
-    return (
-      <Provider store={store}>
-        <Router>
-          <div>
-            <Header />
-            <Switch>
-              <PrivateRoute exact path="/" component={Ventas} />
-              <PrivateRoute exact path="/ingreso" component={Agregar} />
-              <PrivateRoute exact path="/estadisticas" component={Stadistics} />
-              <PrivateRoute exact path="/productos" component={UserList} />
-              <Route exact path="/login" component={Login} />
-            </Switch>
-          </div>
-        </Router>
-      </Provider>
-    );
-  }
+const PrivateRoute = ({component, ...rest}: any) => {
+  return(
+    <Route
+      {...rest}
+      render={(props) =>
+        localStorage.getItem('token') ? (
+          <Component {...props} />
+        ) : (
+          <Redirect
+            to={{
+              pathname: "/login",
+              state: { from: props.location },
+            }}
+          />
+        )
+      }
+    />
+  );
 }
 
-const mapStateToProps = (state) => ({
+const App = () => {
+  return (
+    <Provider store={store}>
+      <Router>
+        <div>
+          <Header />
+          <Switch>
+            <PrivateRoute exact path="/" component={Ventas} />
+            <PrivateRoute exact path="/ingreso" component={Agregar} />
+            <PrivateRoute exact path="/estadisticas" component={Stadistics} />
+            <PrivateRoute exact path="/productos" component={UserList} />
+            <Route exact path="/login" component={Login} />
+          </Switch>
+        </div>
+      </Router>
+    </Provider>
+  );
+}
+
+const mapStateToProps = (state: any) => ({
   currentUser: state.posts.currentUser,
 });
 
