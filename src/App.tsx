@@ -9,7 +9,6 @@ import Header from "./components/Header";
 import Login from "./components/login";
 import Stadistics from "./components/Stadistics";
 import UserList from "./components/UserList";
-// eslint-disable-next-line no-unused-vars
 import "./css/App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
@@ -18,8 +17,6 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import store from "./store";
 import { connect } from "react-redux";
-import io from "socket.io-client";
-import jwtDecode from "jwt-decode";
 import Ventas from "./components/Ventas";
 import Agregar from "./components/Agregar";
 
@@ -29,7 +26,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
   <Route
     {...rest}
     render={(props) =>
-      localStorage.token !== undefined ? (
+      localStorage.token ? (
         <Component {...props} />
       ) : (
         <Redirect
@@ -43,21 +40,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => (
   />
 );
 
-const socket = io("http://18.230.143.84:4000", {
-  transports: ["websocket", "polling"],
-});
-
 class App extends Component {
-  componentDidMount() {
-    if (localStorage.token !== undefined) {
-      const token = localStorage.token;
-      var decode = jwtDecode(token);
-      socket.on("connect", () => {
-        socket.emit("username", decode.email);
-      });
-    }
-  }
-
   render() {
     return (
       <Provider store={store}>
@@ -67,12 +50,8 @@ class App extends Component {
             <Switch>
               <PrivateRoute exact path="/" component={Ventas} />
               <PrivateRoute exact path="/ingreso" component={Agregar} />
-              <PrivateRoute exact path="/stadistics" component={Stadistics} />
-              <PrivateRoute
-                exact
-                path="/lists/productos"
-                component={UserList}
-              />
+              <PrivateRoute exact path="/estadisticas" component={Stadistics} />
+              <PrivateRoute exact path="/productos" component={UserList} />
               <Route exact path="/login" component={Login} />
             </Switch>
           </div>

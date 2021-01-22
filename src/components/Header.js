@@ -47,14 +47,14 @@ class Header extends Component {
                 Añadir Producto
               </Link>
               <Link
-                to="/stadistics"
+                to="/estadisticas"
                 className="d-flex align-items-center ml-4 nav-link"
               >
                 <FontAwesomeIcon icon="chart-bar" className="mr-2" />
                 Estadística
               </Link>
               <Link
-                to="/lists/productos"
+                to="/productos"
                 className="d-flex align-items-center ml-4 nav-link"
               >
                 <FontAwesomeIcon icon="list" className="mr-2" />
