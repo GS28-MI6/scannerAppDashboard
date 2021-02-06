@@ -5,15 +5,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
-import { Nav, Navbar } from "react-bootstrap";
-import { usernameSelector, clearUser } from "./userSlice";
+import { Button, Nav, Navbar } from "react-bootstrap";
+import { userSelector, logout } from "../features/userSlice";
 
 library.add(fas, fab);
 
 export default function Header() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const user: string = useSelector(usernameSelector);
+  const { usuario } = useSelector(userSelector);
   return (
     <Navbar
       className="sticky-top"
@@ -24,7 +24,7 @@ export default function Header() {
       <Navbar.Brand className="align-items-center">
         Pymes Dashboard
       </Navbar.Brand>
-      {user && (
+      {usuario && (
         <>
           <Nav className="mr-auto align-items-center">
             <Link to="/" className="d-flex align-items-center ml-4 nav-link">
@@ -54,10 +54,12 @@ export default function Header() {
             </Link>
           </Nav>
           <Nav>
-            <Navbar.Text className="mr-4">Usuario: {user}</Navbar.Text>
-            <a
+            <Navbar.Text className="mr-4">Usuario: {usuario}</Navbar.Text>
+            <Button
+              variant="outline-light"
               onClick={() => {
-                dispatch(clearUser());
+                dispatch(logout());
+                history.replace("/");
                 history.replace("/login");
               }}
               style={{ cursor: "pointer" }}
@@ -65,7 +67,7 @@ export default function Header() {
             >
               Salir
               <FontAwesomeIcon icon="sign-out-alt" className="ml-2" />
-            </a>
+            </Button>
           </Nav>
         </>
       )}

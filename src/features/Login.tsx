@@ -1,68 +1,95 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useState } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { Container, Card, Alert, Button, Form } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useHistory, useLocation } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import Loader from "../components/loader";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  tokenSelector,
+  loadingSelector,
+  errorSelector,
+  clearError,
+  authenticateLogin,
+} from "./userSlice";
+import Input from "../components/input";
 
 library.add(fas, fab);
 
-class Login extends Component {
-  state = {
-    user: "",
-    password: "",
-    url: window.location.pathname,
+interface FormData {
+  user: string;
+  password: string;
+}
+const schema = yup.object().shape({
+  user: yup.string().required("Usuario requerido."),
+  password: yup.string().required("Contraseña requerida."),
+});
+
+export default function Login() {
+  const dispatch = useDispatch();
+  const history = useHistory();
+
+  const loadingCurrentUser = useSelector(loadingSelector);
+  const error = useSelector(errorSelector);
+  const token = useSelector(tokenSelector);
+
+  const location = useLocation<{ from: string }>();
+  const { from } = location.state || { from: { pathname: "/" } };
+
+  useEffect(() => {
+    if (token) {
+      history.replace(from);
+    }
+  });
+
+  const { register, handleSubmit, errors } = useForm<FormData>({
+    resolver: yupResolver(schema),
+  });
+
+  const onSubmit = async (data: FormData) => {
+    await dispatch(authenticateLogin(data));
   };
 
-  handleChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value,
-    });
-  };
-
-  handleSubmit = (event) => {
-    event.preventDefault();
-    this.props.userLoginPost(this.state);
-  };
-
-  render() {
-    return (
-      <div style={{ height: "95vh" }}>
-        <Container className="d-flex justify-content-center">
+  return (
+    <div style={{ height: "95vh" }}>
+      <Container className="d-flex justify-content-center pt-5">
+        <Loader containerStyle="mt-5 pt-5" loading={loadingCurrentUser} />
+        {!loadingCurrentUser && (
           <Card className="p-5 my-5 w-50">
-            {!this.props.loginErr.error && (
-              <Alert variant="danger">Usuario y/o contraseña inválido/s</Alert>
+            {error && (
+              <Alert
+                dismissible
+                variant="danger"
+                onClose={() => dispatch(clearError())}
+              >
+                {error}
+              </Alert>
             )}
-            {/*<div className="text-center">
-              <img class="mb-5" src={Logo} alt="Ciudad Segura" width="150" />
-            </div>*/}
-            <h2 class="mb-5 font-weight-normal text-center">Iniciar sesión</h2>
+            <h2 className="mb-5 font-weight-normal text-center">
+              Iniciar sesión
+            </h2>
             <div className="d-flex justify-content-center w-100">
-              <Form onSubmit={this.handleSubmit} className="w-100">
-                <Form.Group controlId="formBasicUser">
-                  <Form.Label>Usuario</Form.Label>
-                  <Form.Control
-                    type="text"
-                    id="inputUser"
-                    name="email"
-                    className="form-control mb-3"
-                    placeholder="Usuario"
-                    value={this.state.email}
-                    onChange={this.handleChange}
-                  />
-                </Form.Group>
-                <Form.Group controlId="formBasicPassword">
-                  <Form.Label>Contraseña</Form.Label>
-                  <Form.Control
-                    type="password"
-                    id="inputPassword"
-                    name="password"
-                    className="form-control mb-3"
-                    placeholder="Contraseña"
-                    value={this.state.password}
-                    onChange={this.handleChange}
-                  />
-                </Form.Group>
+              <Form onSubmit={handleSubmit(onSubmit)} className="w-100">
+                <Input
+                  label="Usuario"
+                  name="user"
+                  register={register}
+                  containerStyle="mb-4"
+                  error={errors.user?.message || ""}
+                  type="text"
+                />
+                <Input
+                  label="Contraseña"
+                  name="password"
+                  register={register}
+                  containerStyle="mb-4"
+                  error={errors.password?.message || ""}
+                  type="password"
+                />
                 <div className="text-center">
                   <Button
                     type="submit"
@@ -76,18 +103,8 @@ class Login extends Component {
               </Form>
             </div>
           </Card>
-        </Container>
-      </div>
-    );
-  }
+        )}
+      </Container>
+    </div>
+  );
 }
-
-const mapStateToProps = (state) => ({
-  loginErr: state.posts.loginErr,
-});
-
-const mapDispatchToProps = (dispatch) => ({
-  userLoginPost: (userInfo) => dispatch(userLoginPost(userInfo)),
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(Login);

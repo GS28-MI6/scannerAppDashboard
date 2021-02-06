@@ -6,7 +6,7 @@ import {
   getCarrito,
   postVenta,
 } from "../actions/postActions";
-import Ventas from "./Ventas.js";
+import Ventas from "./Ventas.tsx/index.js.js";
 import Agregar from "./Agregar.js";
 import "./css/users.css";
 import "./css/stadistics.css";

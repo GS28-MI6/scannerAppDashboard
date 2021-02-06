@@ -1,8 +1,6 @@
 import axios from "axios";
 import jwtDecode from "jwt-decode";
 
-const API = "http://177.71.157.129:4000";
-
 export interface CurrentUser {
   id_cliente: number;
   usuario: string;
@@ -10,8 +8,8 @@ export interface CurrentUser {
   iat: number;
 }
 
-interface UserInfo {
-  email: string;
+export interface UserInfo {
+  user: string;
   password: string;
 }
 
@@ -29,38 +27,48 @@ export interface Producto {
   id_producto: number;
 }
 
-export const userLoginPost = async (
-  userInfo: UserInfo
-): Promise<CurrentUser | {}> => {
-  const { email: usuario, password: contraseña } = userInfo;
-  const response = await axios.post(API + "/client_auth", {
-    usuario,
-    contraseña,
-  });
-  return response.status === 401 ? {} : jwtDecode(response.data);
-  //localStorage.setItem("token", res.data);
+export const userLoginRequest = async (userInfo: UserInfo): Promise<string> => {
+  const { user: usuario, password: contraseña } = userInfo;
+  const response = await axios
+    .post("/client_auth", {
+      usuario,
+      contraseña,
+    })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((error) => {
+      return error.response.status;
+    });
+  return response;
 };
 
-export const validateUser = async (): Promise<CurrentUser | {}> => {
+export const validateUser = async (): Promise<CurrentUser> => {
   const { token } = localStorage;
-  const response = await axios.post(API + `/tokenAuth`, {
+  const response = await axios.post("/tokenAuth", {
     token: token,
   });
-  return response.status === 200 ? jwtDecode(token) : {};
+  return jwtDecode(response.data);
 };
 
 export const getUsers = async (): Promise<Productos | []> => {
   const { id_cliente }: any = jwtDecode(localStorage.token);
-  const response = await axios.post(API + "/items", {
+  const response = await axios.post("/items", {
     id_cliente,
   });
   return response.data;
 };
 
-export const getCarrito = async (carrito, barcode, nombre, precio, stock) => {
+/*export const getCarrito = async (
+  carrito: any,
+  barcode: any,
+  nombre: any,
+  precio: any,
+  stock: any
+) => {
   let exists = false;
   console.log(barcode, nombre, precio, stock);
-  carrito.map((item) => {
+  carrito.map((item: any) => {
     if (item.barcode === barcode) {
       exists = true;
       item.cantidad = item.cantidad + 1;
@@ -189,4 +197,4 @@ export const getProductsFiltered = (nombre, tipo, id_cliente) => (dispatch) => {
     .catch((error) => {
       console.log(error);
     });
-};
+};*/

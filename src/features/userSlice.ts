@@ -1,24 +1,41 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import {
+  createAction,
+  createAsyncThunk,
+  createSlice,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import { RootState } from "../app/store";
-import { CurrentUser } from "../actions/User";
+import { CurrentUser, userLoginRequest } from "../actions/User";
+import jwtDecode from "jwt-decode";
 
-interface UserState {
-  currentUser: CurrentUser | {};
-  loadingCurrentUser: boolean;
-  errorsCurrenUser: string[];
+export interface UserState {
+  token: string;
+  currentUser: CurrentUser;
+  loading: boolean;
+  error: string;
 }
 
 const initialState: UserState = {
-  currentUser: {},
-  loadingCurrentUser: false,
-  errorsCurrenUser: [],
+  token: "",
+  currentUser: {
+    id_cliente: -1,
+    email: "",
+    usuario: "",
+    iat: -1,
+  },
+  loading: false,
+  error: "",
 };
 
-const fetchPlayerList = createAsyncThunk(
-  "users/fetchByIdStatus",
-  async (userId, thunkAPI) => {
-    const response = await userAPI.fetchById(userId);
-    return response.data;
+// Async Thunks
+export const authenticateLogin = createAsyncThunk(
+  "Auth/login",
+  async (loginData: { user: string; password: string }, thunkAPI) => {
+    try {
+      return await userLoginRequest(loginData);
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err);
+    }
   }
 );
 
@@ -26,41 +43,48 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    clearUser: (state) => {
-      state.currentUser = initialState.currentUser;
-      localStorage.removeItem("token");
+    clearError: (state) => {
+      state.error = initialState.error;
     },
   },
   extraReducers: {
-    [fetchPlayerList.pending.type]: (state, action) => {
-      state.playerList = {
-        status: "loading",
-        data: {},
-        error: {},
-      };
+    [authenticateLogin.fulfilled.toString()]: (
+      state,
+      action: PayloadAction<string>
+    ) => {
+      //if (action.payload.Errors?.length > 0) {
+      //state.errors = action.payload.Errors;
+      if (!isNaN(Number(action.payload))) {
+        //FIX TO RECIEVE AN ERROR AND A CODE AS ABOVE
+        state.error = "Usuario y/o contraseña incorrecto/s";
+      } else {
+        state.token = action.payload;
+        state.currentUser = jwtDecode(action.payload);
+        state.error = initialState.error;
+      }
+      state.loading = false;
     },
-    [fetchPlayerList.fulfilled.type]: (state, action) => {
-      state.playerList = {
-        status: "idle",
-        data: action.payload,
-        error: {},
-      };
+    [authenticateLogin.pending.toString()]: (state) => {
+      state.loading = true;
     },
-    [fetchPlayerList.rejected.type]: (state, action) => {
-      state.playerList = {
-        status: "idle",
-        data: {},
-        error: action.payload,
-      };
+    [authenticateLogin.rejected.toString()]: (
+      state,
+      action: PayloadAction<any>
+    ) => {
+      state.error = action.payload.Error || initialState.error;
+      state.loading = false;
     },
   },
 });
 
-export const { clearUser } = userSlice.actions;
+// Logout action is handled in root reducer to reset all complete state
+export const logout = createAction("logout");
+
+export const { clearError } = userSlice.actions;
 
 export const userSelector = (state: RootState) => state.user.currentUser;
-
-export const usernameSelector = (state: RootState) =>
-  state.user.currentUser.usuario;
+export const tokenSelector = (state: RootState) => state.user.token;
+export const loadingSelector = (state: RootState) => state.user.loading;
+export const errorSelector = (state: RootState) => state.user.error;
 
 export default userSlice.reducer;

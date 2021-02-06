@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { useState } from "react-redux";
+/*import { useState } from "react-redux";
 import {
   getUsers,
   getProductsFiltered,
@@ -23,9 +23,9 @@ const options = [
   { value: "Rotiseria", label: "Rotiseria" },
   { value: "Otros", label: "Otros" },
 ];
-
-const Ventas = () => {
-  const [selectedOption, setSelectedOption] = useState("Pan");
+*/
+export default function Ventas() {
+  /*const [selectedOption, setSelectedOption] = useState("Pan");
   const [disabled, setDisabled] = useState(false);
 
   submit = () => {
@@ -162,10 +162,11 @@ const Ventas = () => {
     }
     this.props.cantidadChange(this.props.carrito, barcode, cantidad);
   };
-  var total = this.props.total;
+  var total = this.props.total;*/
   return (
-    <div className="tabla" style={{ height: this.stateHeight.heightHolder }}>
-      <BarcodeReader onError={this.handleError} onScan={this.handleScan} />
+    <div className="tabla" style={{ height: "95vh" }}>
+      <h1>Hola</h1>
+      {/* <BarcodeReader onError={this.handleError} onScan={this.handleScan} />
       <div className="filterContainer">
         <div className="formContainer">
           <h2>Codigo de barras:</h2>
@@ -266,22 +267,7 @@ const Ventas = () => {
           {" "}
           Confirmar venta
         </button>
-      </div>
+      </div> */}
     </div>
   );
-};
-
-const mapStateToProps = (state) => ({
-  carrito: state.posts.carrito,
-  total: state.posts.total,
-  currentUser: state.posts.currentUser.decode,
-});
-
-export default connect(mapStateToProps, {
-  getUsers,
-  getProductsFiltered,
-  getCarrito,
-  postVenta,
-  cantidadChange,
-  erraseItem,
-})(Ventas);
+}
