@@ -41,10 +41,10 @@ export default function Login() {
   const { from } = location.state || { from: { pathname: "/" } };
 
   useEffect(() => {
-    if (token) {
+    if (token !== "") {
       history.replace(from);
     }
-  });
+  }, [token]);
 
   const { register, handleSubmit, errors } = useForm<FormData>({
     resolver: yupResolver(schema),

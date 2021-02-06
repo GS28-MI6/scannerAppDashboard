@@ -53,29 +53,21 @@ function addResponseInterceptor(dispatch: ReduxDispatch) {
 
 library.add(fas, fab);
 
-function PrivateRoute({ component, ...rest }: any) {
-  const token = useSelector(tokenSelector);
-  return (
-    <Route
-      {...rest}
-      render={(props) =>
-        token ? (
-          <Component {...props} />
-        ) : (
-          <Redirect
-            to={{
-              pathname: "/login",
-              state: { from: props.location },
-            }}
-          />
-        )
-      }
-    />
-  );
-}
+const PrivateRoute = ({ component, isAuthenticated, ...rest }: any) => {
+  const routeComponent = (props: any) =>
+    isAuthenticated ? (
+      React.createElement(component, props)
+    ) : (
+      <Redirect to={{ pathname: "/login" }} />
+    );
+  return <Route {...rest} render={routeComponent} />;
+};
+
 export default function App() {
-  const [loading, setLoading] = useState(false);
   const dispatch = useReduxDispatch();
+  const [loading, setLoading] = useState(false);
+  const token = useSelector(tokenSelector);
+  const isAuthenticated = token !== "";
 
   // Add necessary loaders for app here
   useEffect(() => {
@@ -94,6 +86,12 @@ export default function App() {
     <BrowserRouter>
       <Header />
       <Switch>
+        <PrivateRoute
+          exact
+          path="/"
+          isAuthenticated={isAuthenticated}
+          component={Ventas}
+        />
         <PrivateRoute exact path="/" component={Ventas} />
         {/* <PrivateRoute exact path="/ingreso" component={Agregar} />
             <PrivateRoute exact path="/estadisticas" component={Stadistics} />
