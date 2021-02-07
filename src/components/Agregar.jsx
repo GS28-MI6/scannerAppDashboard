@@ -1,10 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import {
-  getUsers,
-  getProductsFiltered,
-  getCarrito,
-} from "../actions/postActions";
+import { getUsers, getProductsFiltered, getCarrito } from "../actions/User";
 import CreatableSelect from "react-select";
 import axios from "axios";
 import "../css/users.css";
