@@ -6,7 +6,7 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { Button, Nav, Navbar } from "react-bootstrap";
-import { userSelector, logout } from "../features/userSlice";
+import { userSelector, logout } from "../features/Login/userSlice";
 
 library.add(fas, fab);
 

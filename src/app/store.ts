@@ -9,7 +9,7 @@ import {
   AnyAction,
   CombinedState,
 } from "@reduxjs/toolkit";
-import userReducer, { UserState, logout } from "../features/userSlice";
+import userReducer, { UserState, logout } from "../features/Login/userSlice";
 import { useDispatch } from "react-redux";
 import storage from "redux-persist/lib/storage";
 import {

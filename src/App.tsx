@@ -1,7 +1,7 @@
 import React, { Component, useEffect, useState } from "react";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
 import Header from "./components/Header";
-import Login from "./features/Login";
+import Login from "./features/Login/Login";
 //import Stadistics from "./features/Stadistics";
 //import UserList from "./features/UserList";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -9,12 +9,12 @@ import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import Loader from "./components/loader";
-import Ventas from "./features/Ventas";
+import Ventas from "./features/Ventas/Ventas";
 //import Agregar from "./features/Agregar";
 import { ReduxDispatch, useReduxDispatch } from "./app/store";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { logout, tokenSelector } from "./features/userSlice";
+import { logout, tokenSelector } from "./features/Login/userSlice";
 
 // Add a request interceptor
 // To add token before calling API if token exists
@@ -28,7 +28,7 @@ function addRequestInterceptorAndDefaults() {
         config.headers["Authorization"] = "Bearer " + access_token;
       }*/
       //config.headers["Content-Type"] = "application/json";
-      config.baseURL = "http://177.71.157.129:4000";
+      config.baseURL = "http://177.71.157.129:4100";
       return config;
     },
     (error) => {

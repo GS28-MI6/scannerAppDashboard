@@ -6,7 +6,7 @@ import { Container, Card, Alert, Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
-import Loader from "../components/loader";
+import Loader from "../../components/loader";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
@@ -16,7 +16,7 @@ import {
   clearError,
   authenticateLogin,
 } from "./userSlice";
-import Input from "../components/input";
+import Input from "../../components/input";
 
 library.add(fas, fab);
 

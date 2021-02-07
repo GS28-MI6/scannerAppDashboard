@@ -4,8 +4,8 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import { RootState } from "../app/store";
-import { CurrentUser, userLoginRequest } from "../actions/User";
+import { RootState } from "../../app/store";
+import { CurrentUser, userLoginRequest } from "../../actions/User";
 import jwtDecode from "jwt-decode";
 
 export interface UserState {
