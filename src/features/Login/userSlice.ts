@@ -4,9 +4,10 @@ import {
   createSlice,
   PayloadAction,
 } from "@reduxjs/toolkit";
-import { RootState } from "../../app/store";
+import { ReduxDispatch, RootState } from "../../app/store";
 import { CurrentUser, userLoginRequest } from "../../actions/User";
 import jwtDecode from "jwt-decode";
+import { GeneralError } from "./../../app/store";
 
 export interface UserState {
   token: string;
@@ -28,13 +29,22 @@ const initialState: UserState = {
 };
 
 // Async Thunks
-export const authenticateLogin = createAsyncThunk(
+
+export const authenticateLogin = createAsyncThunk<
+  string,
+  { user: string; password: string },
+  { dispatch: ReduxDispatch; state: RootState; rejectValue: GeneralError }
+>(
   "Auth/login",
   async (loginData: { user: string; password: string }, thunkAPI) => {
     try {
       return await userLoginRequest(loginData);
     } catch (err) {
-      return thunkAPI.rejectWithValue(err);
+      const error: GeneralError = {
+        message: err.message,
+        name: err.name,
+      };
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   configureStore,
   ThunkAction,
@@ -60,7 +61,7 @@ type CombinedStateType = CombinedState<{
 }>;
 
 // handles resetting all the redux state
-export const rootReducer = (
+export const rootReducer: any = (
   state: CombinedStateType | undefined,
   action: AnyAction
 ) => {
@@ -70,7 +71,7 @@ export const rootReducer = (
   return combinedReducers(state, action);
 };
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const persistedReducer: any = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
   reducer: persistedReducer,

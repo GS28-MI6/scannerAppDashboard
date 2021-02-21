@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
@@ -44,14 +44,14 @@ export default function Login() {
     if (token !== "") {
       history.replace(from);
     }
-  }, [token]);
+  }, [token, from, history]);
 
   const { register, handleSubmit, errors } = useForm<FormData>({
     resolver: yupResolver(schema),
   });
 
   const onSubmit = async (data: FormData) => {
-    await dispatch(authenticateLogin(data));
+    dispatch(authenticateLogin(data));
   };
 
   return (
