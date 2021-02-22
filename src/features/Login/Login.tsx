@@ -38,7 +38,7 @@ export default function Login() {
   const token = useSelector(tokenSelector);
 
   const location = useLocation<{ from: string }>();
-  const { from } = location.state || { from: { pathname: "/" } };
+  const { from } = location.state || { from: { pathname: "/ventas" } };
 
   useEffect(() => {
     if (token !== "") {
