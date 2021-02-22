@@ -55,56 +55,54 @@ export default function Login() {
   };
 
   return (
-    <div style={{ height: "95vh" }}>
-      <Container className="d-flex justify-content-center pt-5">
-        <Loader containerStyle="mt-5 pt-5" loading={loadingLogin} />
-        {!loadingLogin && token === "" && (
-          <Card className="p-5 my-5 w-50">
-            <Alert
-              dismissible
-              variant="danger"
-              className="mb-4"
-              onClose={() => dispatch(clearErrors())}
-              show={errorsLogin.length > 0}
-            >
-              {errorsLogin}
-            </Alert>
-            <h2 className="mb-5 font-weight-normal text-center">
-              Iniciar sesión
-            </h2>
-            <div className="d-flex justify-content-center w-100">
-              <Form onSubmit={handleSubmit(onSubmit)} className="w-100">
-                <Input
-                  label="Usuario"
-                  name="user"
-                  register={register}
-                  containerStyle="mb-4"
-                  error={errors.user?.message || ""}
-                  type="text"
-                />
-                <Input
-                  label="Contraseña"
-                  name="password"
-                  register={register}
-                  containerStyle="mb-4"
-                  error={errors.password?.message || ""}
-                  type="password"
-                />
-                <div className="text-center">
-                  <Button
-                    type="submit"
-                    value="iniciar sesión"
-                    variant="outline-primary"
-                    className="w-50"
-                  >
-                    Ingresar
-                  </Button>
-                </div>
-              </Form>
-            </div>
-          </Card>
-        )}
-      </Container>
-    </div>
+    <Container className="d-flex justify-content-center pt-5">
+      <Loader containerStyle="mt-5 pt-5" loading={loadingLogin} />
+      {!loadingLogin && token === "" && (
+        <Card className="p-5 my-5 w-50">
+          <Alert
+            dismissible
+            variant="danger"
+            className="mb-4"
+            onClose={() => dispatch(clearErrors())}
+            show={errorsLogin.length > 0}
+          >
+            {errorsLogin}
+          </Alert>
+          <h2 className="mb-5 font-weight-normal text-center">
+            Iniciar sesión
+          </h2>
+          <div className="d-flex justify-content-center w-100">
+            <Form onSubmit={handleSubmit(onSubmit)} className="w-100">
+              <Input
+                label="Usuario"
+                name="user"
+                register={register}
+                containerStyle="mb-4"
+                error={errors.user?.message || ""}
+                type="text"
+              />
+              <Input
+                label="Contraseña"
+                name="password"
+                register={register}
+                containerStyle="mb-4"
+                error={errors.password?.message || ""}
+                type="password"
+              />
+              <div className="text-center">
+                <Button
+                  type="submit"
+                  value="iniciar sesión"
+                  variant="outline-primary"
+                  className="w-50"
+                >
+                  Ingresar
+                </Button>
+              </div>
+            </Form>
+          </div>
+        </Card>
+      )}
+    </Container>
   );
 }

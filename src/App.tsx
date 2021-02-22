@@ -86,19 +86,21 @@ export default function App() {
   ) : (
     <BrowserRouter>
       <Header />
-      <Switch>
-        <PrivateRoute
-          exact
-          path="/ventas"
-          isAuthenticated={isAuthenticated}
-          component={Ventas}
-        />
-        {/* <PrivateRoute exact path="/ingreso" isAuthenticated={isAuthenticated} component={Agregar} />
+      <div style={{ height: "95vh", overflowY: "scroll" }}>
+        <Switch>
+          <PrivateRoute
+            exact
+            path="/ventas"
+            isAuthenticated={isAuthenticated}
+            component={Ventas}
+          />
+          {/* <PrivateRoute exact path="/ingreso" isAuthenticated={isAuthenticated} component={Agregar} />
             <PrivateRoute exact path="/estadisticas" isAuthenticated={isAuthenticated} component={Stadistics} />
             <PrivateRoute exact path="/productos" isAuthenticated={isAuthenticated} component={UserList} /> */}
-        <Route exact path="/login" component={Login} />
-        <Route path="/" component={Home} />
-      </Switch>
+          <Route exact path="/login" component={Login} />
+          <Route path="/" component={Home} />
+        </Switch>
+      </div>
     </BrowserRouter>
   );
 }
