@@ -28,13 +28,17 @@ export interface Producto {
   id_producto: number;
 }
 
-type LoginResponse = ErrorsResponse & string;
+export type LoginResponse = ErrorsResponse & { Token: string };
 
 export const userLoginRequest = async (
   userInfo: UserInfo
 ): Promise<LoginResponse> => {
   const { user: usuario, password: contraseña } = userInfo;
-  return await axios.post("/client_auth", { usuario, contraseña });
+  const { data } = await axios.post("/client_auth", {
+    usuario,
+    contraseña,
+  });
+  return data;
 };
 
 export const validateUser = async (): Promise<CurrentUser> => {

@@ -24,10 +24,13 @@ export default function Header() {
       <Navbar.Brand className="align-items-center">
         Pymes Dashboard
       </Navbar.Brand>
-      {usuario && (
+      {usuario ? (
         <>
           <Nav className="mr-auto align-items-center">
-            <Link to="/" className="d-flex align-items-center ml-4 nav-link">
+            <Link
+              to="/ventas"
+              className="d-flex align-items-center ml-4 nav-link"
+            >
               <FontAwesomeIcon icon="cash-register" className="mr-2" />
               Realizar Venta
             </Link>
@@ -70,6 +73,18 @@ export default function Header() {
             </Button>
           </Nav>
         </>
+      ) : (
+        <Nav className="ml-auto">
+          <Button
+            variant="outline-light"
+            onClick={() => history.push("/login")}
+            style={{ cursor: "pointer" }}
+            className="d-flex align-items-center"
+          >
+            Ingresar
+            <FontAwesomeIcon icon="sign-in-alt" className="ml-2" />
+          </Button>
+        </Nav>
       )}
     </Navbar>
   );

@@ -15,6 +15,7 @@ import { ReduxDispatch, useReduxDispatch } from "./app/store";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import { logout, tokenSelector } from "./features/Login/userSlice";
+import Home from "./features/Home/Home";
 
 // Add a request interceptor
 // To add token before calling API if token exists
@@ -88,15 +89,15 @@ export default function App() {
       <Switch>
         <PrivateRoute
           exact
-          path="/"
+          path="/ventas"
           isAuthenticated={isAuthenticated}
           component={Ventas}
         />
-        <PrivateRoute exact path="/" component={Ventas} />
-        {/* <PrivateRoute exact path="/ingreso" component={Agregar} />
-            <PrivateRoute exact path="/estadisticas" component={Stadistics} />
-            <PrivateRoute exact path="/productos" component={UserList} /> */}
+        {/* <PrivateRoute exact path="/ingreso" isAuthenticated={isAuthenticated} component={Agregar} />
+            <PrivateRoute exact path="/estadisticas" isAuthenticated={isAuthenticated} component={Stadistics} />
+            <PrivateRoute exact path="/productos" isAuthenticated={isAuthenticated} component={UserList} /> */}
         <Route exact path="/login" component={Login} />
+        <Route path="/" component={Home} />
       </Switch>
     </BrowserRouter>
   );

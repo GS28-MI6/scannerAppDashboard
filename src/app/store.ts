@@ -29,18 +29,18 @@ import {
 
 const UserTransform = createTransform<
   UserState,
-  Omit<UserState, "error" | "loading">
+  Omit<UserState, "errors" | "loading">
 >(
   (inboundState, key) => {
     const {
       loading,
-      error,
+      errors,
       ...userStateWithoutLoadersAndErrors
     } = inboundState;
     return userStateWithoutLoadersAndErrors;
   },
   (outboundState, key) => {
-    return { ...outboundState, loading: false, error: "" };
+    return { ...outboundState, loading: false, errors: [] };
   },
   { whitelist: ["user"] }
 );

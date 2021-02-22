@@ -12,8 +12,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {
   tokenSelector,
   loadingSelector,
-  errorSelector,
-  clearError,
+  errorsSelector,
+  clearErrors,
   authenticateLogin,
 } from "./userSlice";
 import Input from "../../components/input";
@@ -33,8 +33,8 @@ export default function Login() {
   const dispatch = useDispatch();
   const history = useHistory();
 
-  const loadingCurrentUser = useSelector(loadingSelector);
-  const error = useSelector(errorSelector);
+  const loadingLogin = useSelector(loadingSelector);
+  const errorsLogin = useSelector(errorsSelector);
   const token = useSelector(tokenSelector);
 
   const location = useLocation<{ from: string }>();
@@ -57,18 +57,18 @@ export default function Login() {
   return (
     <div style={{ height: "95vh" }}>
       <Container className="d-flex justify-content-center pt-5">
-        <Loader containerStyle="mt-5 pt-5" loading={loadingCurrentUser} />
-        {!loadingCurrentUser && (
+        <Loader containerStyle="mt-5 pt-5" loading={loadingLogin} />
+        {!loadingLogin && token === "" && (
           <Card className="p-5 my-5 w-50">
-            {error && (
-              <Alert
-                dismissible
-                variant="danger"
-                onClose={() => dispatch(clearError())}
-              >
-                {error}
-              </Alert>
-            )}
+            <Alert
+              dismissible
+              variant="danger"
+              className="mb-4"
+              onClose={() => dispatch(clearErrors())}
+              show={errorsLogin.length > 0}
+            >
+              {errorsLogin}
+            </Alert>
             <h2 className="mb-5 font-weight-normal text-center">
               Iniciar sesión
             </h2>
