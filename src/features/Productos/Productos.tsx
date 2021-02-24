@@ -7,7 +7,8 @@ import { useForm } from "react-hook-form";
 import Input from "../../components/input";
 import { Button, Form } from "react-bootstrap";
 import { useReduxDispatch } from "../../app/store";
-import { getProductsFiltered } from "./productosSlice";
+import { getProducts } from "./productosSlice";
+import { Product } from "../../actions/Productos";
 
 const options = [
   { _id: "Comestibles", name: "Comestibles" },
@@ -37,7 +38,7 @@ export default function Productos() {
   });
   const submitForm = async (data: FormData) => {
     const { name, category } = data;
-    dispatch(getProductsFiltered(name, category));
+    dispatch(getProducts({ name, category }));
   };
   return (
     <div className="tabla">
@@ -70,20 +71,9 @@ export default function Productos() {
             <th className="N">Categoria</th>
           </tr>
           <div className="scroller">
-            {productos.map(
-              (
-                p: {
-                  barcode: string;
-                  nombre: string;
-                  precio: number;
-                  stock: number;
-                  categoria: string;
-                },
-                id: string
-              ) => (
-                <Producto key={id} producto={p} />
-              )
-            )}
+            {productos.map((p: Product, id: string) => (
+              <Producto key={id} producto={p} />
+            ))}
           </div>
         </table>
       </div>

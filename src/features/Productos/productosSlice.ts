@@ -4,6 +4,7 @@ import { CurrentUser, userLoginRequest } from "../../actions/User";
 import jwtDecode from "jwt-decode";
 import { GeneralError } from "../../app/store";
 import { LoginResponse } from "../../actions/User";
+import { getProductsFiltered } from "./../../actions/Many Old Functions";
 
 export interface UserState {
   productos: any[];
@@ -18,15 +19,15 @@ const initialState: UserState = {
 };
 
 // Async Thunks
-export const getProductsFiltered = createAsyncThunk<
+export const getProducts = createAsyncThunk<
   LoginResponse,
-  { user: string; password: string },
+  { name: string; category: string },
   { dispatch: ReduxDispatch; state: RootState; rejectValue: GeneralError }
 >(
-  "Auth/login",
-  async (loginData: { user: string; password: string }, thunkAPI) => {
+  "Products/getProducts",
+  async (data: { name: string; category: string }, thunkAPI) => {
     try {
-      const { ErrorCode, Errors, Token } = await userLoginRequest(loginData);
+      const { ErrorCode, Errors, Token } = await getProductsFiltered(data);
       console.log(ErrorCode, Errors, Token);
       return { Token, ErrorCode, Errors };
     } catch (err) {

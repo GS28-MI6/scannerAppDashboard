@@ -1,14 +1,8 @@
 import React from "react";
+import { Product } from "../actions/Productos";
 
-interface producto {
-  barcode: string;
-  nombre: string;
-  precio: number;
-  stock: number;
-  categoria: string;
-}
 interface UserItemProps {
-  producto: producto;
+  producto: Product;
 }
 
 export default function Producto(props: UserItemProps) {
