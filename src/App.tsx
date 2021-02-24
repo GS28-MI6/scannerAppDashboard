@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
+import { ReduxDispatch, useReduxDispatch } from "./app/store";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
-import Header from "./components/Header";
-import Login from "./features/Login/Login";
-//import Stadistics from "./features/Stadistics";
-//import UserList from "./features/UserList";
+import { useSelector } from "react-redux";
+import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
-import Loader from "./components/loader";
-import Ventas from "./features/Ventas/Ventas";
-//import Agregar from "./features/Agregar";
-import { ReduxDispatch, useReduxDispatch } from "./app/store";
-import axios from "axios";
-import { useSelector } from "react-redux";
 import { logout, tokenSelector } from "./features/Login/userSlice";
+import Loader from "./components/loader";
+import Header from "./components/Header";
+import Login from "./features/Login/Login";
 import Home from "./features/Home/Home";
+import Productos from "./features/Productos/Productos";
 
 // Add a request interceptor
 // To add token before calling API if token exists
@@ -90,9 +87,9 @@ export default function App() {
         <Switch>
           <PrivateRoute
             exact
-            path="/ventas"
+            path="/productos"
             isAuthenticated={isAuthenticated}
-            component={Ventas}
+            component={Productos}
           />
           {/* <PrivateRoute exact path="/ingreso" isAuthenticated={isAuthenticated} component={Agregar} />
             <PrivateRoute exact path="/estadisticas" isAuthenticated={isAuthenticated} component={Stadistics} />
