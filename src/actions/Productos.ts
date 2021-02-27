@@ -28,7 +28,13 @@ export interface Product {
   id_producto: number;
 }
 
+export interface Categories {
+  Categorias: { categoria: string }[];
+}
+
 type ProductsResponse = Products & ErrorsResponse;
+
+type CategoriesResponse = Categories & ErrorsResponse;
 
 export const getProductsFiltered = async (filterData: {
   nombre: string;
@@ -42,5 +48,13 @@ export const getProductsFiltered = async (filterData: {
     tipo,
     nombre,
   });
+  return response.data;
+};
+
+export const getCategories = async (
+  token: string
+): Promise<CategoriesResponse> => {
+  const { id_cliente }: any = jwtDecode(token);
+  const response = await axios.post("/categorias", { id_cliente });
   return response.data;
 };

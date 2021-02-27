@@ -10,6 +10,7 @@ interface InputSelectProps {
   error?: string;
   value_id?: string | number;
   optionDefault: string;
+  optionDefaultIsNotDisabled?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   register?: any;
 }
@@ -25,8 +26,7 @@ const InputSelect = (props: InputSelectProps) => {
         name={props.name}
         aria-label={props.name}
         ref={props.register}
-        value={props.value_id}
-        defaultValue={props.value_id || ""}
+        value={props.value_id || ""}
         as="select"
         isValid={
           (props.error === "" || props.error === undefined) &&
@@ -34,8 +34,10 @@ const InputSelect = (props: InputSelectProps) => {
           props.value_id !== ""
         }
         isInvalid={props.error !== undefined && props.error !== ""}
+        onChange={props.onChange}
+        custom
       >
-        <option value="" disabled>
+        <option value="" disabled={!props.optionDefaultIsNotDisabled}>
           {props.optionDefault}
         </option>
         {props.options.map((option) => (
