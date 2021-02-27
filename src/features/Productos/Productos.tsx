@@ -17,20 +17,21 @@ import Loader from "../../components/loader";
 import { tokenSelector } from "../Login/userSlice";
 import { paginate } from "./../../utils";
 import Paginacion from "./../../components/Paginacion";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Productos() {
   const dispatch = useReduxDispatch();
 
   const token = useSelector(tokenSelector);
 
-  const pageSize = 10;
+  const pageSize = 15;
 
   const [pageNumber, setPageNumber] = useState(1);
 
   const [nombre, setNombre] = useState("");
   const [tipo, setTipo] = useState("");
 
-  const [loadingCategories, setLoadingCategories] = useState(false);
+  const [loadingCategories, setLoadingCategories] = useState(true);
   const [errorsCategories, setErrorsCategories] = useState<string[]>([]);
   const [categories, setCategories] = useState<{ _id: string; name: string }[]>(
     []
@@ -45,7 +46,6 @@ export default function Productos() {
     async function onMount() {
       try {
         if (!unmounted) {
-          setLoadingCategories(true);
           const categoriesResponse = await getCategories(token);
           if (categoriesResponse.Errors.length === 0) {
             const categorias: { _id: string; name: string }[] = [];
@@ -78,13 +78,14 @@ export default function Productos() {
 
   const handleSubmit = () => {
     dispatch(getProducts({ nombre, tipo, token }));
+    setPageNumber(1);
   };
 
   const productsPaginated = paginate(productos, pageNumber, pageSize);
 
   return (
     <Container className="py-5">
-      <h2 className="mb-3">Filtrado de Productos</h2>
+      <h2 className="mb-5 text-center">Filtrado de Productos</h2>
       <Loader loading={loading || loadingCategories} />
       <Alert
         variant="danger"
@@ -108,11 +109,11 @@ export default function Productos() {
         errorsCategories.length === 0 && (
           <>
             <Form
-              className="d-flex row justify-content-center"
+              className="d-flex row justify-content-center mb-4"
               onSubmit={() => handleSubmit()}
             >
               <Input
-                containerStyle="d-flex col justify-content-center align-items-center"
+                containerStyle="d-flex col-5 justify-content-center align-items-center"
                 name="nombre"
                 placeholder="Nombre"
                 value={nombre}
@@ -121,7 +122,7 @@ export default function Productos() {
                 }
               />
               <InputSelect
-                containerStyle="d-flex col justify-content-center align-items-center"
+                containerStyle="d-flex col-5 justify-content-center align-items-center"
                 name="tipo"
                 options={categories}
                 optionDefault="Todas"
@@ -131,21 +132,21 @@ export default function Productos() {
                   setTipo(e.target.value)
                 }
               />
-              <div className="d-flex col justify-content-center align-items-center form-group">
+              <div className="d-flex col-1 justify-content-center align-items-center form-group">
                 <Button type="submit" variant="info" className="w-100">
-                  Filtrar
+                  <FontAwesomeIcon icon="search" />
                 </Button>
               </div>
             </Form>
 
-            <Table striped bordered hover>
-              <thead>
-                <tr className="table-row initial">
-                  <th className="N">Barcode</th>
-                  <th className="XG">Nombre</th>
-                  <th className="S">Precio</th>
-                  <th className="S">Stock</th>
-                  <th className="N">Categoria</th>
+            <Table responsive striped bordered hover variant="info">
+              <thead className="thead-dark">
+                <tr className="table-row text-center">
+                  <th>Barcode</th>
+                  <th>Nombre</th>
+                  <th>Precio</th>
+                  <th>Stock</th>
+                  <th>Categoria</th>
                 </tr>
               </thead>
               <tbody>

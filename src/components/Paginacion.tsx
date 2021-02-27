@@ -1,6 +1,5 @@
 import React from "react";
 import _ from "lodash";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Pagination from "react-bootstrap/Pagination";
 
 interface PaginationProps {
@@ -35,20 +34,19 @@ const Paginacion = (props: PaginationProps) => {
 
   return (
     <Pagination size={props.size} className={props.containerStyle}>
-      <Pagination.Item
-        key="prev"
+      <Pagination.First
+        disabled={currentPage === 1}
+        onClick={() => {
+          onPageChange(1);
+        }}
+      />
+      <Pagination.Prev
         disabled={currentPage === 1}
         onClick={() => {
           onPageChange(currentPage - 1);
         }}
-      >
-        <FontAwesomeIcon icon="chevron-left" />
-      </Pagination.Item>
-      {currentPage > 3 && (
-        <Pagination.Item key="prevPages" disabled>
-          <span>...</span>
-        </Pagination.Item>
-      )}
+      />
+      {currentPage > 3 && <Pagination.Ellipsis disabled />}
       {showPages.map((page) => (
         <Pagination.Item
           key={page}
@@ -60,20 +58,19 @@ const Paginacion = (props: PaginationProps) => {
           {page}
         </Pagination.Item>
       ))}
-      {currentPage <= pagesCount - 3 && (
-        <Pagination.Item key="nextPages" disabled>
-          <span>...</span>
-        </Pagination.Item>
-      )}
-      <Pagination.Item
-        key="next"
+      {currentPage <= pagesCount - 3 && <Pagination.Ellipsis disabled />}
+      <Pagination.Next
         disabled={currentPage === pagesCount}
         onClick={() => {
           onPageChange(currentPage + 1);
         }}
-      >
-        <FontAwesomeIcon icon="chevron-right" />
-      </Pagination.Item>
+      />
+      <Pagination.Last
+        disabled={currentPage === pagesCount}
+        onClick={() => {
+          onPageChange(pagesCount);
+        }}
+      />
     </Pagination>
   );
 };
