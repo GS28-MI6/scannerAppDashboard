@@ -23,9 +23,11 @@ export default function Header() {
       style={{ height: "5vh" }}
     >
       <Navbar.Brand className="align-items-center">
-        Pymes Dashboard
+        <Link to="/" className="text-decoration-none text-light">
+          Portal Pymes
+        </Link>
       </Navbar.Brand>
-      {usuario ? (
+      {usuario && (
         <>
           <Nav className="mr-auto align-items-center">
             <Link
@@ -82,7 +84,8 @@ export default function Header() {
             </Button>
           </Nav>
         </>
-      ) : (
+      )}
+      {location.pathname !== "/login" && !usuario && (
         <Nav className="ml-auto">
           <Button
             variant="outline-light"

@@ -13,6 +13,7 @@ import Header from "./components/Header";
 import Login from "./features/Login/Login";
 import Home from "./features/Home/Home";
 import Productos from "./features/Productos/Productos";
+import NotFound from "./features/NotFound/NotFound";
 
 // Add a request interceptor
 // To add token before calling API if token exists
@@ -61,6 +62,16 @@ const PrivateRoute = ({ component, isAuthenticated, ...rest }: any) => {
   return <Route {...rest} render={routeComponent} />;
 };
 
+const HomeRoute = ({ component, isAuthenticated, ...rest }: any) => {
+  const routeComponent = (props: any) =>
+    isAuthenticated ? (
+      <Redirect to={{ pathname: "/ventas" }} />
+    ) : (
+      React.createElement(component, props)
+    );
+  return <Route {...rest} render={routeComponent} />;
+};
+
 export default function App() {
   const dispatch = useReduxDispatch();
   const [loading, setLoading] = useState(false);
@@ -91,11 +102,14 @@ export default function App() {
             isAuthenticated={isAuthenticated}
             component={Productos}
           />
-          {/* <PrivateRoute exact path="/ingreso" isAuthenticated={isAuthenticated} component={Agregar} />
-            <PrivateRoute exact path="/estadisticas" isAuthenticated={isAuthenticated} component={Stadistics} />
-            <PrivateRoute exact path="/productos" isAuthenticated={isAuthenticated} component={UserList} /> */}
           <Route exact path="/login" component={Login} />
-          <Route path="/" component={Home} />
+          <HomeRoute
+            exact
+            path="/"
+            isAuthenticated={isAuthenticated}
+            component={Home}
+          />
+          <Route component={NotFound} />
         </Switch>
       </div>
     </BrowserRouter>
