@@ -1,14 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Producto from "../../components/Producto";
 import * as yup from "yup";
 import InputSelect from "../../components/select";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import Input from "../../components/input";
-import { Button, Form } from "react-bootstrap";
+import { Alert, Button, Container, Form, Table } from "react-bootstrap";
 import { useReduxDispatch } from "../../app/store";
-import { getProducts } from "./productosSlice";
+import {
+  clearErrors,
+  errorsSelector,
+  getProducts,
+  loadingSelector,
+  productosAllSelector,
+} from "./productosSlice";
 import { Product } from "../../actions/Productos";
+import { useSelector } from "react-redux";
+import Loader from "../../components/loader";
+import { tokenSelector } from "../Login/userSlice";
 
 const options = [
   { _id: "Comestibles", name: "Comestibles" },
@@ -22,61 +31,93 @@ const options = [
 ];
 
 interface FormData {
-  name: string;
-  category: string;
+  nombre: string;
+  tipo: string;
 }
 const schema = yup.object().shape({
-  name: yup.string(),
-  category: yup.string(),
+  nombre: yup.string(),
+  tipo: yup.string(),
 });
 
 export default function Productos() {
   const dispatch = useReduxDispatch();
 
+  const productos = useSelector(productosAllSelector);
+  const loading = useSelector(loadingSelector);
+  const errorsProducts: string[] = useSelector(errorsSelector);
+
+  const token = useSelector(tokenSelector);
+
   const { register, handleSubmit, errors, watch } = useForm<FormData>({
+    defaultValues: {
+      nombre: "",
+      tipo: "",
+    },
+    shouldUnregister: false,
     resolver: yupResolver(schema),
   });
+
   const submitForm = async (data: FormData) => {
-    const { name, category } = data;
-    dispatch(getProducts({ name, category }));
+    dispatch(getProducts({ ...data, token }));
   };
+
+  useEffect(() => {
+    if (productos === [])
+      dispatch(getProducts({ nombre: "", tipo: "", token }));
+  }, [dispatch, token, productos]);
+
   return (
-    <div className="tabla">
-      <h2>Filtrado de Productos</h2>
-      <Form onSubmit={handleSubmit(submitForm)} className="w-100">
-        <Input
-          label="Nombre:"
-          name="name"
-          register={register}
-          error={errors.name?.message || ""}
-        />
-        <InputSelect
-          name="category"
-          register={register}
-          label="Categoría:"
-          options={options}
-          optionDefault={watch("category")}
-        />
-        <Button type="submit" variant="info">
-          Filtrar
-        </Button>
-      </Form>
-      <div className="heighter">
-        <table className="table-container">
-          <tr className="table-row initial">
-            <th className="N">Barcode</th>
-            <th className="XG">Nombre</th>
-            <th className="S">Precio</th>
-            <th className="S">Stock</th>
-            <th className="N">Categoria</th>
-          </tr>
-          <div className="scroller">
-            {productos.map((p: Product, id: string) => (
-              <Producto key={id} producto={p} />
-            ))}
-          </div>
-        </table>
-      </div>
-    </div>
+    <Container className="py-5">
+      <h2 className="mb-3">Filtrado de Productos</h2>
+      <Loader loading={loading} />
+      <Alert
+        variant="danger"
+        onClose={() => dispatch(clearErrors())}
+        dismissible
+        show={errorsProducts.length > 0 && !loading}
+      >
+        {errorsProducts.join(". ")}
+      </Alert>
+      {!loading && errorsProducts.length === 0 && (
+        <>
+          <Form onSubmit={handleSubmit(submitForm)}>
+            <Input
+              label="Nombre:"
+              name="nombre"
+              register={register}
+              error={errors.nombre?.message || ""}
+            />
+            <InputSelect
+              name="tipo"
+              register={register}
+              label="Categoría:"
+              options={options}
+              optionDefault={watch("tipo")}
+              error={errors.tipo?.message || ""}
+            />
+            <Button type="submit" variant="info">
+              Filtrar
+            </Button>
+          </Form>
+
+          <Table>
+            <thead>
+              <tr className="table-row initial">
+                <th className="N">Barcode</th>
+                <th className="XG">Nombre</th>
+                <th className="S">Precio</th>
+                <th className="S">Stock</th>
+                <th className="N">Categoria</th>
+              </tr>
+            </thead>
+            <tbody>
+              {productos.map((p: Product) => (
+                <Producto key={p.id_producto} producto={p} />
+              ))}
+            </tbody>
+          </Table>
+        </>
+      )}
+    </Container>
   );
 }

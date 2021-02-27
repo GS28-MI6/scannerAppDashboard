@@ -1,35 +1,53 @@
-import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ReduxDispatch, RootState } from "../../app/store";
-import { CurrentUser, userLoginRequest } from "../../actions/User";
-import jwtDecode from "jwt-decode";
+import {
+  createAsyncThunk,
+  createEntityAdapter,
+  createSlice,
+  EntityState,
+} from "@reduxjs/toolkit";
+import { NormalizedResponse, ReduxDispatch, RootState } from "../../app/store";
 import { GeneralError } from "../../app/store";
-import { LoginResponse } from "../../actions/User";
-import { getProductsFiltered } from "./../../actions/Many Old Functions";
+import { getProductsFiltered, Product } from "../../actions/Productos";
+import { normalize, schema } from "normalizr";
 
-export interface UserState {
-  productos: any[];
+// Normalizr configuration
+const producto = new schema.Entity(
+  "productosObtenidos",
+  {},
+  { idAttribute: "id_producto" }
+);
+
+const productosAdapter = createEntityAdapter<Product>({
+  selectId: (p) => p.id_producto,
+});
+
+export interface ProductosState {
+  productos: EntityState<Product>;
   loading: boolean;
   errors: string[];
 }
 
-const initialState: UserState = {
-  productos: [],
+const initialState: ProductosState = {
+  productos: productosAdapter.getInitialState(),
   loading: false,
   errors: [],
 };
 
 // Async Thunks
 export const getProducts = createAsyncThunk<
-  LoginResponse,
-  { name: string; category: string },
+  NormalizedResponse<Product>,
+  { nombre: string; tipo: string; token: any },
   { dispatch: ReduxDispatch; state: RootState; rejectValue: GeneralError }
 >(
   "Products/getProducts",
-  async (data: { name: string; category: string }, thunkAPI) => {
+  async (data: { nombre: string; tipo: string; token: any }, thunkAPI) => {
     try {
-      const { ErrorCode, Errors, Token } = await getProductsFiltered(data);
-      console.log(ErrorCode, Errors, Token);
-      return { Token, ErrorCode, Errors };
+      const { ErrorCode, Errors, Productos } = await getProductsFiltered(data);
+      const normalized = normalize(Productos, [producto]);
+      return {
+        Errors,
+        ErrorCode,
+        data: { ...normalized.entities.productosObtenidos },
+      };
     } catch (err) {
       const error: GeneralError = {
         message: err.message,
@@ -40,8 +58,8 @@ export const getProducts = createAsyncThunk<
   }
 );
 
-export const userSlice = createSlice({
-  name: "user",
+export const productosSlice = createSlice({
+  name: "productos",
   initialState,
   reducers: {
     clearErrors: (state) => {
@@ -49,35 +67,42 @@ export const userSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(authenticateLogin.fulfilled, (state, { payload }) => {
+    builder.addCase(getProducts.fulfilled, (state, { payload }) => {
       if (payload.Errors.length > 0) {
         state.errors = payload.Errors;
       } else {
-        state.token = payload.Token;
-        state.currentUser = jwtDecode(payload.Token);
+        productosAdapter.setAll(
+          state.productos,
+          (payload.data as { [id: string]: Product }) || []
+        );
         state.errors = initialState.errors;
       }
       state.loading = false;
     });
-    builder.addCase(authenticateLogin.pending, (state) => {
+    builder.addCase(getProducts.pending, (state) => {
       state.loading = true;
     });
-    builder.addCase(authenticateLogin.rejected, (state, { payload }) => {
-      state.loading = false;
+    builder.addCase(getProducts.rejected, (state, { payload }) => {
       const message = payload?.message || "Error";
       state.errors = [...state.errors, message];
+      state.loading = false;
     });
   },
 });
 
-// Logout action is handled in root reducer to reset all complete state
-export const logout = createAction("logout");
+export const { clearErrors } = productosSlice.actions;
 
-export const { clearErrors } = userSlice.actions;
+export const {
+  selectById: productosByIdSelector,
+  selectIds: productosIdsSelector,
+  selectEntities: productosEntitiesSelector,
+  selectAll: productosAllSelector,
+  selectTotal: productosTotalSelector,
+} = productosAdapter.getSelectors<RootState>(
+  (state) => state.productos.productos
+);
 
-export const userSelector = (state: RootState) => state.user.currentUser;
-export const tokenSelector = (state: RootState) => state.user.token;
-export const loadingSelector = (state: RootState) => state.user.loading;
-export const errorsSelector = (state: RootState) => state.user.errors;
+export const loadingSelector = (state: RootState) => state.productos.loading;
+export const errorsSelector = (state: RootState) => state.productos.errors;
 
-export default userSlice.reducer;
+export default productosSlice.reducer;

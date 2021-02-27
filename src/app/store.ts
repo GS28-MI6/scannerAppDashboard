@@ -10,7 +10,6 @@ import {
   AnyAction,
   CombinedState,
 } from "@reduxjs/toolkit";
-import userReducer, { UserState, logout } from "../features/Login/userSlice";
 import { useDispatch } from "react-redux";
 import storage from "redux-persist/lib/storage";
 import {
@@ -24,6 +23,10 @@ import {
   REGISTER,
   createTransform,
 } from "redux-persist";
+import userReducer, { UserState, logout } from "../features/Login/userSlice";
+import productosReducer, {
+  ProductosState,
+} from "../features/Productos/productosSlice";
 
 // Transformations that do not persist errors and loading data
 
@@ -48,16 +51,18 @@ const UserTransform = createTransform<
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user"],
+  whitelist: ["user", "productos"],
   transforms: [UserTransform],
 };
 
 const combinedReducers = combineReducers({
   user: userReducer,
+  productos: productosReducer,
 });
 
 type CombinedStateType = CombinedState<{
   user: UserState;
+  productos: ProductosState;
 }>;
 
 // handles resetting all the redux state

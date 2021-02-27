@@ -1,5 +1,6 @@
 import axios from "axios";
 import jwtDecode from "jwt-decode";
+import { ErrorsResponse } from "./../app/store";
 
 export interface CurrentUser {
   id_cliente: number;
@@ -14,7 +15,7 @@ export interface UserInfo {
 }
 
 export interface Products {
-  productos: Product[];
+  Productos: Product[];
 }
 
 export interface Product {
@@ -27,21 +28,19 @@ export interface Product {
   id_producto: number;
 }
 
-export const getProductsFiltered = (nombre, tipo, id_cliente) => (dispatch) => {
-  axios
-    .post(API + "/items_filtered", {
-      tipo,
-      nombre,
-      id_cliente,
-    })
-    .then((res) => {
-      var users = res.data;
-      dispatch({
-        type: LIST_USERS,
-        payload: users,
-      });
-    })
-    .catch((error) => {
-      console.log(error);
-    });
+type ProductsResponse = Products & ErrorsResponse;
+
+export const getProductsFiltered = async (filterData: {
+  nombre: string;
+  tipo: string;
+  token: string;
+}): Promise<ProductsResponse> => {
+  const { nombre, tipo, token } = filterData;
+  const { id_cliente }: any = jwtDecode(token);
+  const response = await axios.post("/productos", {
+    id_cliente,
+    tipo,
+    nombre,
+  });
+  return response.data;
 };

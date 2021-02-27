@@ -31,7 +31,7 @@ export default function Input(props: InputProps) {
         placeholder={props.placeholder}
         type={props.type || "text"}
         maxLength={props.maxLenght || 50}
-        minLength={props.minLenght || 50}
+        minLength={props.minLenght}
         isValid={
           (props.error === "" || props.error === undefined) &&
           props.value !== undefined &&
