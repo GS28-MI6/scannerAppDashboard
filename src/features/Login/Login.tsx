@@ -4,7 +4,7 @@ import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { Container, Card, Alert, Button, Form } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Loader from "../../components/loader";
 import * as yup from "yup";
@@ -89,7 +89,7 @@ export default function Login() {
                 error={errors.password?.message || ""}
                 type="password"
               />
-              <div className="text-center">
+              <div className="text-center mb-4">
                 <Button
                   type="submit"
                   value="iniciar sesión"
@@ -98,6 +98,11 @@ export default function Login() {
                 >
                   Ingresar
                 </Button>
+              </div>
+              <div className="text-center">
+                <p>
+                  No tengo cuenta, <Link to="/register">registrarme</Link>.
+                </p>
               </div>
             </Form>
           </div>

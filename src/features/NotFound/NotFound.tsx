@@ -8,7 +8,12 @@ export default function NotFound() {
   return (
     <div className="text-center mt-5 pt-5">
       <h1>Página no encontrada</h1>
-      <Button className="mt-5" size="lg" onClick={() => history.goBack()}>
+      <Button
+        className="mt-5"
+        size="lg"
+        variant="info"
+        onClick={() => history.goBack()}
+      >
         <FontAwesomeIcon icon="undo" /> Volver
       </Button>
     </div>

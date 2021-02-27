@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Producto from "../../components/Producto";
 import InputSelect from "../../components/select";
 import Input from "../../components/input";
-import { Alert, Button, Container, Form, Table } from "react-bootstrap";
+import { Alert, Button, Container, Form, Table, Card } from "react-bootstrap";
 import { useReduxDispatch } from "../../app/store";
 import {
   clearErrors,
@@ -18,6 +18,7 @@ import { tokenSelector } from "../Login/userSlice";
 import { paginate } from "./../../utils";
 import Paginacion from "./../../components/Paginacion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Link } from "react-router-dom";
 
 export default function Productos() {
   const dispatch = useReduxDispatch();
@@ -85,7 +86,7 @@ export default function Productos() {
 
   return (
     <Container className="py-5">
-      <h2 className="mb-5 text-center">Filtrado de Productos</h2>
+      <h2 className="mb-5 text-center">Mis Productos</h2>
       <Loader loading={loading || loadingCategories} />
       <Alert
         variant="danger"
@@ -106,7 +107,8 @@ export default function Productos() {
       {!loading &&
         !loadingCategories &&
         errorsProducts.length === 0 &&
-        errorsCategories.length === 0 && (
+        errorsCategories.length === 0 &&
+        (productos.length > 0 ? (
           <>
             <Form
               className="d-flex row justify-content-center mb-4"
@@ -163,7 +165,18 @@ export default function Productos() {
               onPageChange={(page: number) => setPageNumber(page)}
             />
           </>
-        )}
+        ) : (
+          <div className="d-flex justify-content-center">
+            <Card className="text-center py-5 mt-5 w-50">
+              <h4>No tenés productos registrados</h4>
+              <Link to="/producto">
+                <Button className="mt-5" variant="info">
+                  <FontAwesomeIcon icon="plus" /> Agregar Producto
+                </Button>
+              </Link>
+            </Card>
+          </div>
+        ))}
     </Container>
   );
 }
