@@ -29,7 +29,7 @@ export default function Input(props: InputProps) {
         ref={props.register}
         value={props.value}
         placeholder={props.placeholder}
-        type={props.type || "text"}
+        type={props.type}
         maxLength={props.maxLenght || 50}
         minLength={props.minLenght}
         isValid={

@@ -2,19 +2,24 @@ import React, { useEffect, useState } from "react";
 import { Alert, Container, Form, Button } from "react-bootstrap";
 import { RootState, useReduxDispatch } from "../../app/store";
 import {
-  clearErrors,
-  errorsSelector,
+  clearErrorsProductos,
+  errorsProductosSelector,
   getProducts,
-  loadingSelector,
+  loadingProductosSelector,
   productosByIdSelector,
+  clearErrorsCategorias,
+  errorsCategoriasSelector,
+  getCategorias,
+  loadingCategoriasSelector,
+  productosAllSelector,
 } from "../Productos/productosSlice";
-import { getCategories } from "../../actions/Productos";
 import { useSelector } from "react-redux";
 import Loader from "../../components/loader";
 import { tokenSelector } from "../Login/userSlice";
 import { useLocation } from "react-router-dom";
 import Input from "../../components/input";
 import InputSelect from "./../../components/select";
+import { categoriasSelector } from "./../Productos/productosSlice";
 
 export default function Producto() {
   const dispatch = useReduxDispatch();
@@ -22,61 +27,35 @@ export default function Producto() {
 
   const token = useSelector(tokenSelector);
 
-  const [loadingCategories, setLoadingCategories] = useState(true);
-  const [errorsCategories, setErrorsCategories] = useState<string[]>([]);
-  const [categories, setCategories] = useState<{ _id: string; name: string }[]>(
-    []
-  );
-
-  const [nombre, setNombre] = useState("");
-  const [tipo, setTipo] = useState("");
-
   const producto = useSelector((state: RootState) =>
     productosByIdSelector(state, id || "")
   );
-  const loading = useSelector(loadingSelector);
-  const errorsProducts: string[] = useSelector(errorsSelector);
+
+  const [nombre, setNombre] = useState(producto?.nombre || "");
+  const [tipo, setTipo] = useState(producto?.categoria || "");
+  const [precio, setPrecio] = useState(producto?.precio || 0);
+  const [stock, setStock] = useState(producto?.stock || 0);
+
+  const loadingProducts = useSelector(loadingProductosSelector);
+  const errorsProducts: string[] = useSelector(errorsProductosSelector);
+
+  const loadingCategories = useSelector(loadingCategoriasSelector);
+  const errorsCategories: string[] = useSelector(errorsCategoriasSelector);
+
+  const categories = useSelector(categoriasSelector);
+  const productos = useSelector(productosAllSelector);
 
   useEffect(() => {
-    dispatch(getProducts({ nombre: "", tipo: "", token }));
-  }, [dispatch, token]);
+    if (categories.length === 0) dispatch(getCategorias({ token }));
+  }, [dispatch, token, categories]);
 
   useEffect(() => {
-    let unmounted = false;
-    async function onMount() {
-      try {
-        if (!unmounted) {
-          const categoriesResponse = await getCategories(token);
-          if (categoriesResponse.Errors.length === 0) {
-            const categorias: { _id: string; name: string }[] = [];
-            categoriesResponse.Categorias.forEach((c) =>
-              categorias.push({ _id: c.categoria, name: c.categoria })
-            );
-            setCategories(categorias);
-          } else {
-            setErrorsCategories(categoriesResponse.Errors);
-          }
-          setLoadingCategories(false);
-        }
-      } catch (ex) {
-        if (!unmounted) {
-          setErrorsCategories(["No se pudieron obtener las categorías."]);
-          setLoadingCategories(false);
-        }
-      }
-    }
-    onMount();
-    return () => {
-      unmounted = true;
-    };
-  }, [token, dispatch]);
-
-  useEffect(() => {
-    dispatch(getProducts({ nombre: "", tipo: "", token }));
-  }, [dispatch, token]);
+    if (productos.length === 0)
+      dispatch(getProducts({ nombre: "", tipo: "", token }));
+  }, [dispatch, token, productos]);
 
   const handleSubmit = () => {
-    dispatch(getProducts({ nombre, tipo, token }));
+    //Crear o editar
   };
 
   return (
@@ -84,27 +63,28 @@ export default function Producto() {
       <h2 className="mb-5 text-center">
         {producto?.nombre || "Crear Producto"}
       </h2>
-      <Loader loading={loading || loadingCategories} />
+      <Loader loading={loadingProducts || loadingCategories} />
       <Alert
         variant="danger"
-        onClose={() => dispatch(clearErrors())}
+        onClose={() => dispatch(clearErrorsProductos())}
         dismissible
-        show={errorsProducts.length > 0 && !loading}
+        show={errorsProducts.length > 0 && !loadingProducts}
       >
         {errorsProducts.join(". ")}
       </Alert>
       <Alert
         variant="danger"
-        onClose={() => setErrorsCategories([])}
+        onClose={() => dispatch(clearErrorsCategorias())}
         dismissible
         show={errorsCategories.length > 0 && !loadingCategories}
       >
         {errorsCategories.join(". ")}
       </Alert>
-      {!loading &&
+      {!loadingProducts &&
         !loadingCategories &&
         errorsProducts.length === 0 &&
-        errorsCategories.length === 0 && (
+        errorsCategories.length === 0 &&
+        categories.length > 0 && (
           <Form
             className="justify-content-center mb-4"
             onSubmit={() => handleSubmit()}
@@ -127,6 +107,26 @@ export default function Producto() {
               value_id={tipo}
               onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
                 setTipo(e.target.value)
+              }
+            />
+            {/* CREAR INPUT DE DINERO
+            <Input
+              containerStyle="d-flex justify-content-center align-items-center"
+              name="precio"
+              placeholder="Precio"
+              value={precio}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setPrecio(e.target.value)
+              }
+            />*/}
+            <Input
+              containerStyle="d-flex justify-content-center align-items-center"
+              name="stock"
+              placeholder="Stock"
+              type="number"
+              value={stock}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                setStock(Number(e.target.value))
               }
             />
             <div className="d-flex justify-content-center align-items-center form-group">

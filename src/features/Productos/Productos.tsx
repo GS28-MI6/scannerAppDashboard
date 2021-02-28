@@ -5,13 +5,18 @@ import Input from "../../components/input";
 import { Alert, Button, Container, Form, Table, Card } from "react-bootstrap";
 import { useReduxDispatch } from "../../app/store";
 import {
-  clearErrors,
-  errorsSelector,
+  clearErrorsProductos,
+  errorsProductosSelector,
   getProducts,
-  loadingSelector,
+  loadingProductosSelector,
   productosAllSelector,
+  getCategorias,
+  categoriasSelector,
+  errorsCategoriasSelector,
+  loadingCategoriasSelector,
+  clearErrorsCategorias,
 } from "./productosSlice";
-import { getCategories, Product } from "../../actions/Productos";
+import { Product } from "../../actions/Productos";
 import { useSelector } from "react-redux";
 import Loader from "../../components/loader";
 import { tokenSelector } from "../Login/userSlice";
@@ -32,50 +37,24 @@ export default function Productos() {
   const [nombre, setNombre] = useState("");
   const [tipo, setTipo] = useState("");
 
-  const [loadingCategories, setLoadingCategories] = useState(true);
-  const [errorsCategories, setErrorsCategories] = useState<string[]>([]);
-  const [categories, setCategories] = useState<{ _id: string; name: string }[]>(
-    []
-  );
+  const categories = useSelector(categoriasSelector);
+  const loadingCategories = useSelector(loadingCategoriasSelector);
+  const errorsCategories = useSelector(errorsCategoriasSelector);
 
   const productos = useSelector(productosAllSelector);
-  const loading = useSelector(loadingSelector);
-  const errorsProducts: string[] = useSelector(errorsSelector);
+  const loadingProductos = useSelector(loadingProductosSelector);
+  const errorsProducts: string[] = useSelector(errorsProductosSelector);
 
   useEffect(() => {
-    let unmounted = false;
-    async function onMount() {
-      try {
-        if (!unmounted) {
-          const categoriesResponse = await getCategories(token);
-          if (categoriesResponse.Errors.length === 0) {
-            const categorias: { _id: string; name: string }[] = [];
-            categoriesResponse.Categorias.forEach((c) =>
-              categorias.push({ _id: c.categoria, name: c.categoria })
-            );
-            setCategories(categorias);
-          } else {
-            setErrorsCategories(categoriesResponse.Errors);
-          }
-          setLoadingCategories(false);
-        }
-      } catch (ex) {
-        if (!unmounted) {
-          setErrorsCategories(["No se pudieron obtener las categorías."]);
-          setLoadingCategories(false);
-        }
-      }
+    if (categories.length === 0) dispatch(getCategorias({ token }));
+  }, [dispatch, token, categories]);
+
+  useEffect(() => {
+    if (productos.length === 0) {
+      dispatch(getProducts({ nombre: "", tipo: "", token }));
+      setPageNumber(1);
     }
-    onMount();
-    return () => {
-      unmounted = true;
-    };
-  }, [token, dispatch]);
-
-  useEffect(() => {
-    dispatch(getProducts({ nombre: "", tipo: "", token }));
-    setPageNumber(1);
-  }, [dispatch, token]);
+  }, [dispatch, token, productos]);
 
   const handleSubmit = () => {
     dispatch(getProducts({ nombre, tipo, token }));
@@ -87,28 +66,28 @@ export default function Productos() {
   return (
     <Container className="py-5">
       <h2 className="mb-5 text-center">Mis Productos</h2>
-      <Loader loading={loading || loadingCategories} />
+      <Loader loading={loadingProductos || loadingCategories} />
       <Alert
         variant="danger"
-        onClose={() => dispatch(clearErrors())}
+        onClose={() => dispatch(clearErrorsProductos())}
         dismissible
-        show={errorsProducts.length > 0 && !loading}
+        show={errorsProducts.length > 0 && !loadingProductos}
       >
         {errorsProducts.join(". ")}
       </Alert>
       <Alert
         variant="danger"
-        onClose={() => setErrorsCategories([])}
+        onClose={() => dispatch(clearErrorsCategorias())}
         dismissible
         show={errorsCategories.length > 0 && !loadingCategories}
       >
         {errorsCategories.join(". ")}
       </Alert>
-      {!loading &&
+      {!loadingProductos &&
         !loadingCategories &&
         errorsProducts.length === 0 &&
         errorsCategories.length === 0 &&
-        (productos.length > 0 ? (
+        (productos.length > 0 && categories.length > 0 ? (
           <>
             <Form
               className="d-flex row justify-content-center mb-4"

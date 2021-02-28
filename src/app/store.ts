@@ -27,6 +27,7 @@ import userReducer, { UserState, logout } from "../features/Login/userSlice";
 import productosReducer, {
   ProductosState,
 } from "../features/Productos/productosSlice";
+import config from "./config";
 
 // Transformations that do not persist errors and loading data
 
@@ -51,7 +52,7 @@ const UserTransform = createTransform<
 const persistConfig = {
   key: "root",
   storage,
-  whitelist: ["user", "productos"],
+  whitelist: ["user"],
   transforms: [UserTransform],
 };
 
@@ -66,7 +67,7 @@ type CombinedStateType = CombinedState<{
 }>;
 
 // handles resetting all the redux state
-export const rootReducer: any = (
+export const rootReducer = (
   state: CombinedStateType | undefined,
   action: AnyAction
 ) => {
@@ -76,7 +77,7 @@ export const rootReducer: any = (
   return combinedReducers(state, action);
 };
 
-const persistedReducer: any = persistReducer(persistConfig, rootReducer);
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 const store = configureStore({
   reducer: persistedReducer,

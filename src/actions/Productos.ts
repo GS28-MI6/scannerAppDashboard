@@ -34,7 +34,7 @@ export interface Categories {
 
 type ProductsResponse = Products & ErrorsResponse;
 
-type CategoriesResponse = Categories & ErrorsResponse;
+export type CategoriesResponse = Categories & ErrorsResponse;
 
 export const getProductsFiltered = async (filterData: {
   nombre: string;

@@ -2,15 +2,15 @@ import React from "react";
 import { Form } from "react-bootstrap";
 
 interface InputSelectProps {
+  options: { _id: string | number; name: string | number }[];
+  optionDefault: string;
+  optionDefaultIsNotDisabled?: boolean;
   containerStyle?: string;
   inputStyle?: string;
   name?: string;
   label?: string;
-  options: { _id: string | number; name: string | number }[];
   error?: string;
   value_id?: string | number;
-  optionDefault: string;
-  optionDefaultIsNotDisabled?: boolean;
   onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   register?: any;
 }
@@ -37,7 +37,7 @@ const InputSelect = (props: InputSelectProps) => {
         onChange={props.onChange}
         custom
       >
-        <option value="" disabled={!props.optionDefaultIsNotDisabled}>
+        <option key="" value="" disabled={!props.optionDefaultIsNotDisabled}>
           {props.optionDefault}
         </option>
         {props.options.map((option) => (
