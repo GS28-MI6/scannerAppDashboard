@@ -3,7 +3,7 @@ import { Form } from "react-bootstrap";
 
 interface InputSelectProps {
   options: { _id: string | number; name: string | number }[];
-  optionDefault: string;
+  optionDefault?: string;
   optionDefaultIsNotDisabled?: boolean;
   containerStyle?: string;
   inputStyle?: string;
@@ -13,9 +13,11 @@ interface InputSelectProps {
   value_id?: string | number;
   onChange?: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   register?: any;
+  showGreen?: boolean;
 }
 
 const InputSelect = (props: InputSelectProps) => {
+  console.log(props.value_id);
   return (
     <Form.Group className={props.containerStyle}>
       <Form.Label>{props.label}</Form.Label>
@@ -26,9 +28,10 @@ const InputSelect = (props: InputSelectProps) => {
         name={props.name}
         aria-label={props.name}
         ref={props.register}
-        value={props.value_id || ""}
+        defaultValue={props.value_id || ""}
         as="select"
         isValid={
+          props.showGreen &&
           (props.error === "" || props.error === undefined) &&
           props.value_id !== undefined &&
           props.value_id !== ""
@@ -37,9 +40,11 @@ const InputSelect = (props: InputSelectProps) => {
         onChange={props.onChange}
         custom
       >
-        <option key="" value="" disabled={!props.optionDefaultIsNotDisabled}>
-          {props.optionDefault}
-        </option>
+        {props.optionDefault && (
+          <option key="" value="" disabled={!props.optionDefaultIsNotDisabled}>
+            {props.optionDefault}
+          </option>
+        )}
         {props.options.map((option) => (
           <option key={option._id} value={option._id}>
             {option.name}

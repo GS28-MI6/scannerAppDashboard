@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Alert, Container, Form, Button } from "react-bootstrap";
 import { RootState, useReduxDispatch } from "../../app/store";
 import {
@@ -20,6 +20,27 @@ import { useLocation } from "react-router-dom";
 import Input from "../../components/input";
 import InputSelect from "./../../components/select";
 import { categoriasSelector } from "./../Productos/productosSlice";
+import * as yup from "yup";
+import { Controller, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import InputMoney from "../../components/inputMoney";
+import { formatValue } from "react-currency-input-field";
+
+interface FormData {
+  nombre: string;
+  tipo: string;
+  precio: string;
+  stock: number;
+}
+const schema = yup.object().shape({
+  nombre: yup.string().required("Nombre requerido."),
+  tipo: yup.string().required("Categoría requerida."),
+  precio: yup.string().required("Precio requerido."),
+  stock: yup
+    .string()
+    .required("Stock requerido.")
+    .matches(/^[0-9]*$/),
+});
 
 export default function Producto() {
   const dispatch = useReduxDispatch();
@@ -31,10 +52,23 @@ export default function Producto() {
     productosByIdSelector(state, id || "")
   );
 
-  const [nombre, setNombre] = useState(producto?.nombre || "");
-  const [tipo, setTipo] = useState(producto?.categoria || "");
-  const [precio, setPrecio] = useState(producto?.precio || 0);
-  const [stock, setStock] = useState(producto?.stock || 0);
+  const { register, handleSubmit, errors, control } = useForm<FormData>({
+    resolver: yupResolver(schema),
+    shouldUnregister: false,
+    defaultValues: {
+      nombre: producto?.nombre,
+      tipo: producto?.categoria,
+      precio: String(
+        formatValue({
+          value: String(producto?.precio),
+          groupSeparator: ".",
+          decimalSeparator: ",",
+          prefix: "$",
+        })
+      ),
+      stock: producto?.stock,
+    },
+  });
 
   const loadingProducts = useSelector(loadingProductosSelector);
   const errorsProducts: string[] = useSelector(errorsProductosSelector);
@@ -54,7 +88,7 @@ export default function Producto() {
       dispatch(getProducts({ nombre: "", tipo: "", token }));
   }, [dispatch, token, productos]);
 
-  const handleSubmit = () => {
+  const onSubmit = () => {
     //Crear o editar
   };
 
@@ -87,50 +121,55 @@ export default function Producto() {
         categories.length > 0 && (
           <Form
             className="justify-content-center mb-4"
-            onSubmit={() => handleSubmit()}
+            onSubmit={handleSubmit(onSubmit)}
           >
             <Input
-              containerStyle="d-flex justify-content-center align-items-center"
+              containerStyle="align-items-center"
               name="nombre"
-              placeholder="Nombre"
-              value={nombre}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setNombre(e.target.value)
-              }
+              label="Nombre"
+              register={register}
+              error={errors.nombre?.message || ""}
             />
-            <InputSelect
-              containerStyle="d-flex justify-content-center align-items-center"
+            <Controller
+              control={control}
               name="tipo"
-              options={categories}
-              optionDefault="Todas"
-              optionDefaultIsNotDisabled
-              value_id={tipo}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                setTipo(e.target.value)
-              }
+              render={({ onChange, value, name, ref }) => (
+                <InputSelect
+                  containerStyle="align-items-center"
+                  label="Categoría"
+                  optionDefault="Elegir"
+                  register={ref}
+                  options={categories}
+                  value_id={value}
+                  name={name}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                    onChange(e.target.value)
+                  }
+                  error={errors.tipo?.message || ""}
+                />
+              )}
             />
-            {/* CREAR INPUT DE DINERO
-            <Input
-              containerStyle="d-flex justify-content-center align-items-center"
+            <InputMoney
+              containerStyle="align-items-center"
               name="precio"
-              placeholder="Precio"
-              value={precio}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setPrecio(e.target.value)
-              }
-            />*/}
+              label="Precio"
+              register={register}
+              error={errors.precio?.message || ""}
+            />
             <Input
-              containerStyle="d-flex justify-content-center align-items-center"
+              containerStyle="align-items-center"
               name="stock"
-              placeholder="Stock"
-              type="number"
-              value={stock}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setStock(Number(e.target.value))
+              label="Stock"
+              type="text"
+              register={register}
+              error={
+                errors.stock?.message?.includes("match")
+                  ? "Stock inválido."
+                  : errors.stock?.message || ""
               }
             />
-            <div className="d-flex justify-content-center align-items-center form-group">
-              <Button type="submit" variant="info" className="w-100">
+            <div className="align-items-center text-center">
+              <Button type="submit" variant="info" className="w-25">
                 Guardar
               </Button>
             </div>
