@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   configureStore,
   ThunkAction,
@@ -9,7 +10,6 @@ import {
   AnyAction,
   CombinedState,
 } from "@reduxjs/toolkit";
-import userReducer, { UserState, logout } from "../features/Login/userSlice";
 import { useDispatch } from "react-redux";
 import storage from "redux-persist/lib/storage";
 import {
@@ -23,23 +23,28 @@ import {
   REGISTER,
   createTransform,
 } from "redux-persist";
+import userReducer, { UserState, logout } from "../features/Login/userSlice";
+import productosReducer, {
+  ProductosState,
+} from "../features/Productos/productosSlice";
+import config from "./config";
 
 // Transformations that do not persist errors and loading data
 
 const UserTransform = createTransform<
   UserState,
-  Omit<UserState, "error" | "loading">
+  Omit<UserState, "errors" | "loading">
 >(
   (inboundState, key) => {
     const {
       loading,
-      error,
+      errors,
       ...userStateWithoutLoadersAndErrors
     } = inboundState;
     return userStateWithoutLoadersAndErrors;
   },
   (outboundState, key) => {
-    return { ...outboundState, loading: false, error: "" };
+    return { ...outboundState, loading: false, errors: [] };
   },
   { whitelist: ["user"] }
 );
@@ -53,10 +58,12 @@ const persistConfig = {
 
 const combinedReducers = combineReducers({
   user: userReducer,
+  productos: productosReducer,
 });
 
 type CombinedStateType = CombinedState<{
   user: UserState;
+  productos: ProductosState;
 }>;
 
 // handles resetting all the redux state

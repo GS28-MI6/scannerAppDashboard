@@ -3,17 +3,15 @@ import { Form } from "react-bootstrap";
 
 export interface InputProps {
   containerStyle?: string;
-  label?: string;
-  id?: string;
+  inputStyle?: string;
   name?: string;
+  label?: string;
+  value?: string | number;
   register?: any;
-  value?: string;
-  defaultValue?: any;
   placeholder?: string;
   type?: string;
   maxLenght?: number;
   minLenght?: number;
-  isOk?: boolean;
   error?: string;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 }
@@ -21,28 +19,30 @@ export interface InputProps {
 export default function Input(props: InputProps) {
   return (
     <Form.Group className={props.containerStyle}>
-      {props.label && <Form.Label>{props.label}</Form.Label>}
+      <Form.Label>{props.label}</Form.Label>
       <Form.Control
-        id={props.id}
-        data-testid={props.id}
+        className={props.inputStyle}
+        id={props.name}
+        data-testid={props.name}
         name={props.name}
         aria-label={props.name}
         ref={props.register}
         value={props.value}
-        defaultValue={props.defaultValue}
         placeholder={props.placeholder}
-        type={props.type || "text"}
-        maxLength={props.maxLenght}
+        type={props.type}
+        maxLength={props.maxLenght || 50}
         minLength={props.minLenght}
-        isValid={props.isOk && !props.error ? true : false}
-        isInvalid={props.error ? true : false}
+        isValid={
+          (props.error === "" || props.error === undefined) &&
+          props.value !== undefined &&
+          props.value !== ""
+        }
+        isInvalid={props.error !== undefined && props.error !== ""}
         onChange={props.onChange}
       ></Form.Control>
-      {props.error && (
-        <Form.Control.Feedback type="invalid">
-          {props.error}
-        </Form.Control.Feedback>
-      )}
+      <Form.Control.Feedback type="invalid">
+        {props.error}
+      </Form.Control.Feedback>
     </Form.Group>
   );
 }

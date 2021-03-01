@@ -1,18 +1,15 @@
-import {
-  createAction,
-  createAsyncThunk,
-  createSlice,
-  PayloadAction,
-} from "@reduxjs/toolkit";
-import { RootState } from "../../app/store";
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { ReduxDispatch, RootState } from "../../app/store";
 import { CurrentUser, userLoginRequest } from "../../actions/User";
 import jwtDecode from "jwt-decode";
+import { GeneralError } from "./../../app/store";
+import { LoginResponse } from "../../actions/User";
 
 export interface UserState {
   token: string;
   currentUser: CurrentUser;
   loading: boolean;
-  error: string;
+  errors: string[];
 }
 
 const initialState: UserState = {
@@ -24,17 +21,26 @@ const initialState: UserState = {
     iat: -1,
   },
   loading: false,
-  error: "",
+  errors: [],
 };
 
 // Async Thunks
-export const authenticateLogin = createAsyncThunk(
+export const authenticateLogin = createAsyncThunk<
+  LoginResponse,
+  { user: string; password: string },
+  { dispatch: ReduxDispatch; state: RootState; rejectValue: GeneralError }
+>(
   "Auth/login",
   async (loginData: { user: string; password: string }, thunkAPI) => {
     try {
-      return await userLoginRequest(loginData);
+      const { ErrorCode, Errors, Token } = await userLoginRequest(loginData);
+      return { Token, ErrorCode, Errors };
     } catch (err) {
-      return thunkAPI.rejectWithValue(err);
+      const error: GeneralError = {
+        message: err.message,
+        name: err.name,
+      };
+      return thunkAPI.rejectWithValue(error);
     }
   }
 );
@@ -43,48 +49,40 @@ export const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    clearError: (state) => {
-      state.error = initialState.error;
+    clearErrors: (state) => {
+      state.errors = initialState.errors;
     },
   },
-  extraReducers: {
-    [authenticateLogin.fulfilled.toString()]: (
-      state,
-      action: PayloadAction<string>
-    ) => {
-      //if (action.payload.Errors?.length > 0) {
-      //state.errors = action.payload.Errors;
-      if (!isNaN(Number(action.payload))) {
-        //FIX TO RECIEVE AN ERROR AND A CODE AS ABOVE
-        state.error = "Usuario y/o contraseña incorrecto/s";
+  extraReducers: (builder) => {
+    builder.addCase(authenticateLogin.fulfilled, (state, { payload }) => {
+      if (payload.Errors.length > 0) {
+        state.errors = payload.Errors;
       } else {
-        state.token = action.payload;
-        state.currentUser = jwtDecode(action.payload);
-        state.error = initialState.error;
+        state.token = payload.Token;
+        state.currentUser = jwtDecode(payload.Token);
+        state.errors = initialState.errors;
       }
       state.loading = false;
-    },
-    [authenticateLogin.pending.toString()]: (state) => {
+    });
+    builder.addCase(authenticateLogin.pending, (state) => {
       state.loading = true;
-    },
-    [authenticateLogin.rejected.toString()]: (
-      state,
-      action: PayloadAction<any>
-    ) => {
-      state.error = action.payload.Error || initialState.error;
+    });
+    builder.addCase(authenticateLogin.rejected, (state, { payload }) => {
       state.loading = false;
-    },
+      const message = payload?.message || "Error";
+      state.errors = [...state.errors, message];
+    });
   },
 });
 
 // Logout action is handled in root reducer to reset all complete state
 export const logout = createAction("logout");
 
-export const { clearError } = userSlice.actions;
+export const { clearErrors } = userSlice.actions;
 
 export const userSelector = (state: RootState) => state.user.currentUser;
 export const tokenSelector = (state: RootState) => state.user.token;
 export const loadingSelector = (state: RootState) => state.user.loading;
-export const errorSelector = (state: RootState) => state.user.error;
+export const errorsSelector = (state: RootState) => state.user.errors;
 
 export default userSlice.reducer;

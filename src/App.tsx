@@ -1,20 +1,20 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { ReduxDispatch, useReduxDispatch } from "./app/store";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
-import Header from "./components/Header";
-import Login from "./features/Login/Login";
-//import Stadistics from "./features/Stadistics";
-//import UserList from "./features/UserList";
+import { useSelector } from "react-redux";
+import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
-import Loader from "./components/loader";
-import Ventas from "./features/Ventas/Ventas";
-//import Agregar from "./features/Agregar";
-import { ReduxDispatch, useReduxDispatch } from "./app/store";
-import axios from "axios";
-import { useSelector } from "react-redux";
 import { logout, tokenSelector } from "./features/Login/userSlice";
+import Loader from "./components/loader";
+import Header from "./components/Header";
+import Login from "./features/Login/Login";
+import Home from "./features/Home/Home";
+import Productos from "./features/Productos/Productos";
+import NotFound from "./features/NotFound/NotFound";
+import Producto from "./features/Producto/Producto";
 
 // Add a request interceptor
 // To add token before calling API if token exists
@@ -63,6 +63,16 @@ const PrivateRoute = ({ component, isAuthenticated, ...rest }: any) => {
   return <Route {...rest} render={routeComponent} />;
 };
 
+const HomeRoute = ({ component, isAuthenticated, ...rest }: any) => {
+  const routeComponent = (props: any) =>
+    isAuthenticated ? (
+      <Redirect to={{ pathname: "/ventas" }} />
+    ) : (
+      React.createElement(component, props)
+    );
+  return <Route {...rest} render={routeComponent} />;
+};
+
 export default function App() {
   const dispatch = useReduxDispatch();
   const [loading, setLoading] = useState(false);
@@ -85,19 +95,30 @@ export default function App() {
   ) : (
     <BrowserRouter>
       <Header />
-      <Switch>
-        <PrivateRoute
-          exact
-          path="/"
-          isAuthenticated={isAuthenticated}
-          component={Ventas}
-        />
-        <PrivateRoute exact path="/" component={Ventas} />
-        {/* <PrivateRoute exact path="/ingreso" component={Agregar} />
-            <PrivateRoute exact path="/estadisticas" component={Stadistics} />
-            <PrivateRoute exact path="/productos" component={UserList} /> */}
-        <Route exact path="/login" component={Login} />
-      </Switch>
+      <div style={{ height: "95vh", overflowY: "scroll" }}>
+        <Switch>
+          <PrivateRoute
+            exact
+            path="/productos"
+            isAuthenticated={isAuthenticated}
+            component={Productos}
+          />
+          <PrivateRoute
+            exact
+            path="/producto"
+            isAuthenticated={isAuthenticated}
+            component={Producto}
+          />
+          <Route exact path="/login" component={Login} />
+          <HomeRoute
+            exact
+            path="/"
+            isAuthenticated={isAuthenticated}
+            component={Home}
+          />
+          <Route component={NotFound} />
+        </Switch>
+      </div>
     </BrowserRouter>
   );
 }
