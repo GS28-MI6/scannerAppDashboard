@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Alert, Container, Form, Button } from "react-bootstrap";
+import { Alert, Container, Form, Button, Card } from "react-bootstrap";
 import { RootState, useReduxDispatch } from "../../app/store";
 import {
   clearErrorsProductos,
@@ -24,22 +24,21 @@ import * as yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InputMoney from "../../components/inputMoney";
-import { formatValue } from "react-currency-input-field";
 
 interface FormData {
   nombre: string;
   tipo: string;
-  precio: string;
+  precio: number;
   stock: number;
 }
 const schema = yup.object().shape({
   nombre: yup.string().required("Nombre requerido."),
   tipo: yup.string().required("Categoría requerida."),
-  precio: yup.string().required("Precio requerido."),
-  stock: yup
-    .string()
-    .required("Stock requerido.")
-    .matches(/^[0-9]*$/),
+  precio: yup
+    .number()
+    .required("Precio requerido.")
+    .min(0.1, "Precio inválido."),
+  stock: yup.number().required("Stock requerido.").min(0, "Stock inválido."),
 });
 
 export default function Producto() {
@@ -52,20 +51,19 @@ export default function Producto() {
     productosByIdSelector(state, id || "")
   );
 
-  const { register, handleSubmit, errors, control } = useForm<FormData>({
+  const {
+    register,
+    handleSubmit,
+    errors,
+    control,
+    clearErrors,
+    watch,
+  } = useForm<FormData>({
     resolver: yupResolver(schema),
-    shouldUnregister: false,
     defaultValues: {
       nombre: producto?.nombre,
       tipo: producto?.categoria,
-      precio: String(
-        formatValue({
-          value: String(producto?.precio),
-          groupSeparator: ".",
-          decimalSeparator: ",",
-          prefix: "$",
-        })
-      ),
+      precio: producto?.precio,
       stock: producto?.stock,
     },
   });
@@ -88,93 +86,110 @@ export default function Producto() {
       dispatch(getProducts({ nombre: "", tipo: "", token }));
   }, [dispatch, token, productos]);
 
-  const onSubmit = () => {
-    //Crear o editar
+  const onSubmit = (data: FormData) => {
+    clearErrors();
+    console.log(data);
   };
 
   return (
     <Container className="py-5">
-      <h2 className="mb-5 text-center">
-        {producto?.nombre || "Crear Producto"}
-      </h2>
-      <Loader loading={loadingProducts || loadingCategories} />
-      <Alert
-        variant="danger"
-        onClose={() => dispatch(clearErrorsProductos())}
-        dismissible
-        show={errorsProducts.length > 0 && !loadingProducts}
-      >
-        {errorsProducts.join(". ")}
-      </Alert>
-      <Alert
-        variant="danger"
-        onClose={() => dispatch(clearErrorsCategorias())}
-        dismissible
-        show={errorsCategories.length > 0 && !loadingCategories}
-      >
-        {errorsCategories.join(". ")}
-      </Alert>
-      {!loadingProducts &&
-        !loadingCategories &&
-        errorsProducts.length === 0 &&
-        errorsCategories.length === 0 &&
-        categories.length > 0 && (
-          <Form
-            className="justify-content-center mb-4"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <Input
-              containerStyle="align-items-center"
-              name="nombre"
-              label="Nombre"
-              register={register}
-              error={errors.nombre?.message || ""}
-            />
-            <Controller
-              control={control}
-              name="tipo"
-              render={({ onChange, value, name, ref }) => (
-                <InputSelect
-                  containerStyle="align-items-center"
-                  label="Categoría"
-                  optionDefault="Elegir"
-                  register={ref}
-                  options={categories}
-                  value_id={value}
-                  name={name}
-                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                    onChange(e.target.value)
-                  }
-                  error={errors.tipo?.message || ""}
-                />
-              )}
-            />
-            <InputMoney
-              containerStyle="align-items-center"
-              name="precio"
-              label="Precio"
-              register={register}
-              error={errors.precio?.message || ""}
-            />
-            <Input
-              containerStyle="align-items-center"
-              name="stock"
-              label="Stock"
-              type="text"
-              register={register}
-              error={
-                errors.stock?.message?.includes("match")
-                  ? "Stock inválido."
-                  : errors.stock?.message || ""
-              }
-            />
-            <div className="align-items-center text-center">
-              <Button type="submit" variant="info" className="w-25">
-                Guardar
-              </Button>
-            </div>
-          </Form>
-        )}
+      <Card className="p-5">
+        <h2 className="mb-5 text-center">
+          {producto?.nombre || "Crear Producto"}
+        </h2>
+        <Loader loading={loadingProducts || loadingCategories} />
+        <Alert
+          variant="danger"
+          onClose={() => dispatch(clearErrorsProductos())}
+          dismissible
+          show={errorsProducts.length > 0 && !loadingProducts}
+        >
+          {errorsProducts.join(". ")}
+        </Alert>
+        <Alert
+          variant="danger"
+          onClose={() => dispatch(clearErrorsCategorias())}
+          dismissible
+          show={errorsCategories.length > 0 && !loadingCategories}
+        >
+          {errorsCategories.join(". ")}
+        </Alert>
+        {!loadingProducts &&
+          !loadingCategories &&
+          errorsProducts.length === 0 &&
+          errorsCategories.length === 0 &&
+          categories.length > 0 && (
+            <Form
+              className="justify-content-center mb-4"
+              onSubmit={handleSubmit(onSubmit)}
+            >
+              <Input
+                containerStyle="align-items-center"
+                name="nombre"
+                label="Nombre"
+                register={register}
+                error={errors.nombre?.message || ""}
+              />
+              <Controller
+                control={control}
+                name="tipo"
+                defaultValue={watch("tipo")}
+                render={({ onChange, value, name, ref }) => (
+                  <InputSelect
+                    containerStyle="align-items-center"
+                    label="Categoría"
+                    optionDefault="Elegir"
+                    register={ref}
+                    options={categories}
+                    value_id={value}
+                    name={name}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                      onChange(e.target.value)
+                    }
+                    error={errors.tipo?.message || ""}
+                  />
+                )}
+              />
+              <Controller
+                control={control}
+                name="precio"
+                defaultValue={null}
+                render={({ onChange, value, name, ref }) => (
+                  <InputMoney
+                    containerStyle="align-items-center"
+                    name={name}
+                    label="Precio"
+                    register={ref}
+                    error={
+                      errors.precio?.message?.includes("NaN")
+                        ? "Precio inválido."
+                        : errors.precio?.message || ""
+                    }
+                    value={value}
+                    onChange={(value: number) => onChange(value)}
+                  />
+                )}
+              />
+              <Input
+                containerStyle="align-items-center"
+                name="stock"
+                label="Stock"
+                type="text"
+                register={register}
+                error={
+                  errors.stock?.message?.includes("NaN")
+                    ? "Stock inválido."
+                    : errors.stock?.message || ""
+                }
+              />
+              <div className="align-items-center text-center">
+                <Button type="submit" variant="info" className="w-25">
+                  Guardar
+                </Button>
+              </div>
+            </Form>
+          )}
+      </Card>
     </Container>
   );
 }

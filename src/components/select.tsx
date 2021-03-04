@@ -17,7 +17,6 @@ interface InputSelectProps {
 }
 
 const InputSelect = (props: InputSelectProps) => {
-  console.log(props.value_id);
   return (
     <Form.Group className={props.containerStyle}>
       <Form.Label>{props.label}</Form.Label>

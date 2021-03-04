@@ -29,7 +29,10 @@ interface FormData {
 const schema = yup.object().shape({
   user: yup.string().required("Usuario requerido."),
   email: yup.string().required("Email requerido."),
-  phone: yup.number().min(11111111, "Telefono no valido").integer("Telefono requerido"),
+  phone: yup
+    .number()
+    .required("Telefono requerido.")
+    .min(11111111, "Telefono inválido."),
   password: yup.string().required("Contraseña requerida."),
 });
 
@@ -56,8 +59,8 @@ export default function Login() {
 
   const onSubmit = async (data: FormData) => {
     dispatch(registerClient(data));
-    if(errorsRegister.length === 0){
-      history.replace({pathname: "/login"});
+    if (errorsRegister.length === 0) {
+      history.replace({ pathname: "/login" });
     }
   };
 
@@ -75,9 +78,7 @@ export default function Login() {
           >
             {errorsRegister}
           </Alert>
-          <h2 className="mb-5 font-weight-normal text-center">
-            Registro
-          </h2>
+          <h2 className="mb-5 font-weight-normal text-center">Registro</h2>
           <div className="d-flex justify-content-center w-100">
             <Form onSubmit={handleSubmit(onSubmit)} className="w-100">
               <Input
@@ -109,7 +110,11 @@ export default function Login() {
                 name="phone"
                 register={register}
                 containerStyle="mb-4"
-                error={errors.phone?.message || ""}
+                error={
+                  errors.phone?.message?.includes("NaN")
+                    ? "Teléfono inválido."
+                    : errors.phone?.message || ""
+                }
                 type="text"
               />
               <div className="text-center mb-4">
@@ -124,7 +129,7 @@ export default function Login() {
               </div>
               <div className="text-center">
                 <p>
-                  ¿Ya tenes una cuenta?, <Link to="/login">Inicia sesión</Link>.
+                  ¿Ya tenés una cuenta?, <Link to="/login">Iniciá sesión</Link>.
                 </p>
               </div>
             </Form>

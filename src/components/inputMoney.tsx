@@ -1,53 +1,57 @@
-import React, { ChangeEvent } from "react";
+import React from "react";
 import { Form } from "react-bootstrap";
-import CurrencyInput from "react-currency-input-field";
+import NumberFormat, { NumberFormatValues } from "react-number-format";
 
 export interface InputProps {
   containerStyle?: string;
   inputStyle?: string;
   name?: string;
   label?: string;
-  value?: string | number;
+  value?: number;
   register?: any;
   placeholder?: string;
   maxLenght?: number;
   minLenght?: number;
   error?: string;
-  onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (value: number) => void;
   showGreen?: boolean;
 }
 
 export default function InputMoney(props: InputProps) {
+  const onChange = (values: NumberFormatValues) => {
+    props.onChange &&
+      props.onChange(
+        values.floatValue === undefined || values.floatValue === null
+          ? 0
+          : values.floatValue
+      );
+  };
   return (
     <Form.Group className={props.containerStyle}>
       <Form.Label>{props.label}</Form.Label>
-      <CurrencyInput
+      <NumberFormat
         className={`form-control ${
-          props.showGreen &&
-          (props.error === "" || props.error === undefined) &&
-          props.value !== undefined &&
-          props.value !== ""
+          props.showGreen && props.error && props.value
             ? "is-valid"
-            : props.error !== undefined && props.error !== ""
+            : props.error
             ? "is-invalid"
             : ""
         } ${props.inputStyle}`}
-        id={props.name}
-        data-testid={props.name}
-        name={props.name}
-        aria-label={props.name}
         ref={props.register}
-        defaultValue={props.value}
-        placeholder={props.placeholder}
-        maxLength={props.maxLenght || 50}
-        minLength={props.minLenght}
-        onChange={props.onChange}
-        prefix="$"
-        fixedDecimalLength={2}
-        disableAbbreviations
-        step={1}
+        aria-label={props.name}
+        name={props.name}
+        type="text"
+        placeholder="$ 0,00"
+        prefix="$ "
         decimalSeparator=","
-        groupSeparator="."
+        thousandSeparator="."
+        allowedDecimalSeparators={[",", "."]}
+        allowNegative={false}
+        fixedDecimalScale
+        decimalScale={2}
+        value={props.value}
+        onValueChange={onChange}
+        onFocus={(e: React.ChangeEvent<HTMLInputElement>) => e.target.select()}
       />
       <Form.Control.Feedback type="invalid">
         {props.error}
