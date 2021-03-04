@@ -11,6 +11,7 @@ import { logout, tokenSelector } from "./features/Login/userSlice";
 import Loader from "./components/loader";
 import Header from "./components/Header";
 import Login from "./features/Login/Login";
+import Register from "./features/Register/Register";
 import Home from "./features/Home/Home";
 import Productos from "./features/Productos/Productos";
 import NotFound from "./features/NotFound/NotFound";
@@ -110,6 +111,7 @@ export default function App() {
             component={Producto}
           />
           <Route exact path="/login" component={Login} />
+          <Route exact path="/register" component={Register} />
           <HomeRoute
             exact
             path="/"

@@ -77,15 +77,12 @@ class Agregar extends Component {
         console.log(response);
 
         var { nombre, precio, stock, categoria } = response.data[0];
-        var precio = parseFloat(precio).toFixed(2);
-        this.state.total = parseFloat(this.state.total).toFixed(2);
-        var sumaTotal = parseFloat(this.state.total) + parseFloat(precio);
-        sumaTotal = parseFloat(sumaTotal).toFixed(2);
-        var stock = stock.toString();
+        var auxPrecio = parseFloat(precio).toFixed(2);
+        var auxStock = stock.toString();
         if (nombre !== null) {
           productoInput.value = nombre;
-          precioInput.value = precio;
-          stockInput.value = stock;
+          precioInput.value = auxPrecio;
+          stockInput.value = auxStock;
           if (categoria !== null) {
             this.setState({
               selectedOption: {
@@ -142,7 +139,7 @@ class Agregar extends Component {
 
   render() {
     return (
-      <div className="tabla">
+      <div className="tabla" style={{height:"95vh"}}>
         <BarcodeReader onError={this.handleError} onScan={this.handleScan} />
         <div className="ingresos">
           <div className="formIngresos">

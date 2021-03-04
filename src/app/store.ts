@@ -27,6 +27,9 @@ import userReducer, { UserState, logout } from "../features/Login/userSlice";
 import productosReducer, {
   ProductosState,
 } from "../features/Productos/productosSlice";
+import userRegisterReducer, { UserRegisterState } from "../features/Register/userRegisterSlice";
+import ventasReducer, { VentasState } from "../features/Ventas/ventasSlice";
+
 import config from "./config";
 
 // Transformations that do not persist errors and loading data
@@ -58,11 +61,15 @@ const persistConfig = {
 
 const combinedReducers = combineReducers({
   user: userReducer,
+  userRegister: userRegisterReducer,
+  ventas: ventasReducer,
   productos: productosReducer,
 });
 
 type CombinedStateType = CombinedState<{
   user: UserState;
+  userRegister: UserRegisterState;
+  ventas: VentasState;
   productos: ProductosState;
 }>;
 
