@@ -37,8 +37,11 @@ const schema = yup.object().shape({
   precio: yup
     .number()
     .required("Precio requerido.")
-    .min(0.1, "Precio inválido."),
-  stock: yup.number().required("Stock requerido.").min(0, "Stock inválido."),
+    .moreThan(0, "Precio inválido."),
+  stock: yup
+    .number()
+    .required("Stock requerido.")
+    .moreThan(0, "Stock inválido."),
 });
 
 export default function Producto() {
