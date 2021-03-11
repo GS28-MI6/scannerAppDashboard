@@ -15,7 +15,6 @@ import Register from "./features/Register/Register";
 import Home from "./features/Home/Home";
 import Productos from "./features/Productos/Productos";
 import NotFound from "./features/NotFound/NotFound";
-import Producto from "./features/Producto/Producto";
 
 // Add a request interceptor
 // To add token before calling API if token exists
@@ -103,12 +102,6 @@ export default function App() {
             path="/productos"
             isAuthenticated={isAuthenticated}
             component={Productos}
-          />
-          <PrivateRoute
-            exact
-            path="/producto"
-            isAuthenticated={isAuthenticated}
-            component={Producto}
           />
           <Route exact path="/login" component={Login} />
           <Route exact path="/register" component={Register} />

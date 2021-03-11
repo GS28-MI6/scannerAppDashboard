@@ -40,15 +40,6 @@ export default function Header() {
               Realizar Venta
             </Link>
             <Link
-              to="/producto"
-              className={`d-flex align-items-center ml-4 nav-link ${
-                location.pathname === "/producto" ? "active" : ""
-              }`}
-            >
-              <FontAwesomeIcon icon="plus" className="mr-2" />
-              Añadir Producto
-            </Link>
-            <Link
               to="/estadisticas"
               className={`d-flex align-items-center ml-4 nav-link ${
                 location.pathname === "/estadisticas" ? "active" : ""

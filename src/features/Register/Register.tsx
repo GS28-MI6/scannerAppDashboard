@@ -31,6 +31,7 @@ const schema = yup.object().shape({
   email: yup.string().required("Email requerido."),
   phone: yup
     .number()
+    .typeError("Telefono inválido.")
     .required("Telefono requerido.")
     .min(11111111, "Telefono inválido."),
   password: yup.string().required("Contraseña requerida."),
@@ -110,11 +111,7 @@ export default function Login() {
                 name="phone"
                 register={register}
                 containerStyle="mb-4"
-                error={
-                  errors.phone?.message?.includes("NaN")
-                    ? "Teléfono inválido."
-                    : errors.phone?.message || ""
-                }
+                error={errors.phone?.message || ""}
                 type="text"
               />
               <div className="text-center mb-4">
